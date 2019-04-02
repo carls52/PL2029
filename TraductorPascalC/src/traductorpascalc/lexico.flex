@@ -11,7 +11,11 @@ import java_cup.runtime.*;
 
 
 %%
-"#define"	{return new Symbol(sym.define_);}
+
+/*---------------- palabras reervadas ---------------*/
+"program"	{return new Symbol(sym.program);}
+"UNIT"	{return new Symbol(sym.unit);}
+
 
 "."             {return new Symbol (sym.punto)}
 "var"           {return new Symbol (sym.var)}
@@ -30,26 +34,32 @@ import java_cup.runtime.*;
 "div"		{return new Symbol(sym.div);}
 "mod"		{return new Symbol(sym.mod_);}
 
-
+""		{return new Symbol(sym.lambda);
 "{"		{return new Symbol(sym.abrirLla);}
 "}"		{return new Symbol(sym.cerrarLla);}
 "return"	{return new Symbol(sym.return_);}
-
-
-"||"            {return new Symbol(sym.or_);}
-"&&"            {return new Symbol(sym.and_);}
-"=="            {return new Symbol(sym.igualigual);}
+"const"	{return new Symbol(sym.const);}
+"INTEGER"	{return new Symbol(sym.int);}
+"REAL"	{return new Symbol(sym.real);}
+"if"      	{return new Symbol(sym.if_);}
+"then"	{return new Symbol(sym.then_);}
+"else"    	{return new Symbol(sym.else_);}
+"while"   	{return new Symbol(sym.while_);}
+"do"     	{return new Symbol(sym.do_);}
+"repeat"	{return new Symbol(sym.repeat_);}
+"until"   	{return new Symbol(sym.until_);}
+"for"     	{return new Symbol(sym.for_);}
+"to"     	{return new Symbol(sym.to_);}
+"downto" 	{return new Symbol(sym.downto_):
+"or"      	{return new Symbol(sym.or_);}
+"and"     	{return new Symbol(sym.and_);}
+"and"     	{return new Symbol(sym.and_);}
+"not"     	{return new Symbol(sym.not_);}
 "<"		{return new Symbol(sym.menor);}
 ">"		{return new Symbol(sym.mayor);}
-">="            {return new Symbol(sym.mayorigual);}
-"<="            {return new Symbol(sym.menorigual);}
-"!"		{return new Symbol(sym.not_);}
-"if"            {return new Symbol(sym.if_);}
-"else"          {return new Symbol(sym.else_);}
-"while"         {return new Symbol(sym.while_);}
-"do"            {return new Symbol(sym.do_);}
-"until"         {return new Symbol(sym.until_);}
-"for"           {return new Symbol(sym.for_);}
+">="      	{return new Symbol(sym.mayorigual);}
+"<="      	{return new Symbol(sym.menorigual);}
+
 /*---------------- identificadores ---------------*/
 
 [a-n-ozA-N-O-Z][a-zA-Z0-9_]*{

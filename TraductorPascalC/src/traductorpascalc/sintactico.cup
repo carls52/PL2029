@@ -39,7 +39,13 @@ non terminal SUBPARAMLIST;
 non terminal EXPLIST;
 non terminal PROC_CALL;
 
-terminal String define_, identifier, puntocoma, punto, begin_, end_, igual, 
+non terminal EXPCOND;
+non terminal OPLOG;
+non terminal FACTORCOND;
+non terminal OPCOMP;
+
+
+terminal String program, identifier,numeric_integer_const,  numeric_real_const, string_const, const, puntocoma, punto, begin_, end_, igual, 
     procedure, function, dospountos, abrirPar, cerrarPar, lambda, masa, menos, 
     mul, div, mod, coma, puntosIgual;
 
@@ -48,13 +54,13 @@ precedence left mul, div, and_, or_, mod_;
 
 start with PRG;
 
-PRG ::= define_ identifier puntocoma BLQ punto
+PRG ::= define_ identifier puntocoma BLQ punto  | unit identifier puntocoma DCLLIST punto
 BLQ ::= DCLIST begin_ SENTLIST end_
-DCLIST ::= | DCLIST DCL
+DCLIST ::= lambda | DCLIST DCL
 SENTLIST ::= SENT | SENTLIST SENT
 
 DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN
-DEFCTE ::= "const" CTELIST
+DEFCTE ::= const CTELIST
 CTELIST ::= identifier igual SIMPVALUE puntocoma
             | CTELIST identifier igual SIMPVALUE puntocoma
 SIMPVALUE ::= numeric_integer_const | numeric_real_const
@@ -65,12 +71,16 @@ DEFVARLIST ::= VARLIST dospuntos TBAS
 VARLIST ::= identifier | identifier coma VARLIST
 DEFPROC ::= procedure identifier FORMAL_PARAMLIST puntocoma BLQ puntocoma
 DEFFUN ::= function identifier FORMAL_PARAMLIST dospuntos TBAS puntocoma BLQ puntocoma
-FORMAL_PARAMLIST ::=  | abrirPar FORMAL_PARAM cerrarPar
+FORMAL_PARAMLIST ::=  lambda | abrirPar FORMAL_PARAM cerrarPar
 FORMAL_PARAM ::= VARLIST dospuntos TBAS
                 | VARLIST dospuntos TBAS puntocoma FORMAL_PARAM
-TBAS ::= "INTEGER" | "REAL" 
+TBAS ::= int | real 
 
-SENT ::= ASIG puntocoma | PROC_CALL puntocoma
+SENT ::= ASIG puntocoma | PROC_CALL puntocoma | if_ EXPCOND then_ BLQ else_ BLQ
+ | while_ EXPCOND do_ BLQ
+ | repeat_ BLQ until_ EXPCOND puntocoma
+ | for_ identifier puntosIgual EXP INC EXP do_ BLQ 
+INC ::= to_ | downto_
 ASIG ::= ID puntosIgual EXP
 ID := identifier
 EXP ::= EXP OP EXP | FACTOR
@@ -80,3 +90,8 @@ FACTOR ::= SIMPVALUE | abrirPar EXP cerrarPar | identifier SUBPPARAMLIST
 SUBPPARAMLIST ::= lambda | abrirPar EXPLIST cerrarPar
 EXPLIST ::= EXP | EXP coma EXPLIST
 PROC_CALL ::= identifier SUBPPARAMLIST 
+
+EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND
+OPLOG ::= or_ | and_
+FACTORCOND ::= EXP OPCOMP EXP | abrirPar EXP cerarPar | not_ FACTORCOND
+OPCOMP ::= menor | mayor | menorigual | mayorigual | igual 
