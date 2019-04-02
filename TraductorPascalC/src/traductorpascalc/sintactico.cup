@@ -54,7 +54,7 @@ precedence left mul, div, and_, or_, mod_;
 
 start with PRG;
 
-PRG ::= define_ identifier puntocoma BLQ punto  | unit identifier puntocoma DCLLIST punto
+PRG ::= program_ identifier puntocoma BLQ punto  | unit_ identifier puntocoma DCLLIST punto
 BLQ ::= DCLIST begin_ SENTLIST end_
 DCLIST ::= lambda | DCLIST DCL
 SENTLIST ::= SENT | SENTLIST SENT

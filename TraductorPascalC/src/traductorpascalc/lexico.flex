@@ -13,8 +13,8 @@ import java_cup.runtime.*;
 %%
 
 /*---------------- palabras reervadas ---------------*/
-"program"	{return new Symbol(sym.program);}
-"UNIT"	{return new Symbol(sym.unit);}
+"program"	{return new Symbol(sym.program_);}
+"UNIT"	{return new Symbol(sym.unit_);}
 
 
 "."             {return new Symbol (sym.punto)}
@@ -35,8 +35,6 @@ import java_cup.runtime.*;
 "mod"		{return new Symbol(sym.mod_);}
 
 ""		{return new Symbol(sym.lambda);
-"{"		{return new Symbol(sym.abrirLla);}
-"}"		{return new Symbol(sym.cerrarLla);}
 "return"	{return new Symbol(sym.return_);}
 "const"	{return new Symbol(sym.const);}
 "INTEGER"	{return new Symbol(sym.int);}
