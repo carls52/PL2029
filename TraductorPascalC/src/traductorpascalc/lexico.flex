@@ -14,9 +14,9 @@ import java_cup.runtime.*;
 "#define"	{return new Symbol(sym.define_);}
 
 "."             {return new Symbol (sym.punto)}
-"var"             {return new Symbol (sym.var)}
-"procedure"		{return new Symbol(sym.procedure);}
-"function"		{return new Symbol(sym.function);}
+"var"           {return new Symbol (sym.var)}
+"procedure"	{return new Symbol(sym.procedure);}
+"function"	{return new Symbol(sym.function);}
 ":"		{return new Symbol(sym.dospuntos);}
 ";"		{return new Symbol(sym.puntocoma);}
 "="		{return new Symbol(sym.igual);}

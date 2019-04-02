@@ -39,7 +39,9 @@ non terminal SUBPARAMLIST;
 non terminal EXPLIST;
 non terminal PROC_CALL;
 
-terminal String define_, identifier, puntocoma, punto, begin_, end_, igual, procedure, function, dospountos, abrirPar, cerrarPar, lambda, masa, menos , mul, div, mod, coma, puntosIgual;
+terminal String define_, identifier, puntocoma, punto, begin_, end_, igual, 
+    procedure, function, dospountos, abrirPar, cerrarPar, lambda, masa, menos, 
+    mul, div, mod, coma, puntosIgual;
 
 precedence left mas, menos;
 precedence left mul, div, and_, or_, mod_;
