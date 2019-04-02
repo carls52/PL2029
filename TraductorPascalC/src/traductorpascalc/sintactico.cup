@@ -1,0 +1,80 @@
+package traductorcpascal;
+import java_cup.runtime.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
+action code
+{:	
+:}
+parser code
+{:	
+:}
+
+non terminal PRG;
+non terminal BLQ;
+non terminal DELIST;
+non terminal SENTLIST;
+
+non terminal DCL;
+non terminal DEFCTE;
+non terminal CTELIST;
+non terminal SIMPVALUE;
+non terminal DEFVAR;
+non terminal DEFVARLIST;
+non terminal VARLIST;
+non terminal DEFPROC;
+non terminal DEFFUN;
+non terminal FORMAL_PARAMLIST;
+non terminal FORMAL_PARAM;
+non terminal TBAS;
+
+non terminal SENT;
+non terminal ASIG;
+non terminal ID;
+non terminal EXP;
+non terminal OP;
+non terminal OPARIT;
+non terminal FACTOR;
+non terminal SUBPARAMLIST;
+non terminal EXPLIST;
+non terminal PROC_CALL;
+
+terminal String define_, identifier, puntocoma, punto, begin_, end_, igual, procedure, function, dospountos, abrirPar, cerrarPar, lambda, masa, menos , mul, div, mod, coma, puntosIgual;
+
+precedence left mas, menos;
+precedence left mul, div, and_, or_, mod_;
+
+start with PRG;
+
+PRG ::= define_ identifier puntocoma BLQ punto
+BLQ ::= DCLIST begin_ SENTLIST end_
+DCLIST ::= | DCLIST DCL
+SENTLIST ::= SENT | SENTLIST SENT
+
+DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN
+DEFCTE ::= "const" CTELIST
+CTELIST ::= identifier igual SIMPVALUE puntocoma
+            | CTELIST identifier igual SIMPVALUE puntocoma
+SIMPVALUE ::= numeric_integer_const | numeric_real_const
+            | string_const
+DEFVAR ::= var DEFVARLIST puntcoma
+DEFVARLIST ::= VARLIST dospuntos TBAS
+            | DEFVARLIST puntocoma VARLIST dospuntos TBAS
+VARLIST ::= identifier | identifier coma VARLIST
+DEFPROC ::= procedure identifier FORMAL_PARAMLIST puntocoma BLQ puntocoma
+DEFFUN ::= function identifier FORMAL_PARAMLIST dospuntos TBAS puntocoma BLQ puntocoma
+FORMAL_PARAMLIST ::=  | abrirPar FORMAL_PARAM cerrarPar
+FORMAL_PARAM ::= VARLIST dospuntos TBAS
+                | VARLIST dospuntos TBAS puntocoma FORMAL_PARAM
+TBAS ::= "INTEGER" | "REAL" 
+
+SENT ::= ASIG puntocoma | PROC_CALL puntocoma
+ASIG ::= ID puntosIgual EXP
+ID := identifier
+EXP ::= EXP OP EXP | FACTOR
+OP ::= OPARIT
+OPARIT ::= mas | menos | mul | div | mod
+FACTOR ::= SIMPVALUE | abrirPar EXP cerrarPar | identifier SUBPPARAMLIST
+SUBPPARAMLIST ::= lambda | abrirPar EXPLIST cerrarPar
+EXPLIST ::= EXP | EXP coma EXPLIST
+PROC_CALL ::= identifier SUBPPARAMLIST 
