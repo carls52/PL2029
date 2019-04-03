@@ -54,7 +54,7 @@ import java_cup.runtime.*;
 "begin" 	{return new Symbol(sym.begin_);}
 "end"           {return new Symbol(sym.end_);}
 "const"         {return new Symbol(sym.const_);}
-"var_"          {return new Symbol(sym.var_);}
+"var"           {return new Symbol(sym.var_);}
 "or"      	{return new Symbol(sym.or_);}
 "and"     	{return new Symbol(sym.and_);}
 "and"     	{return new Symbol(sym.and_);}

@@ -12,7 +12,7 @@ parser code
 
 non terminal PRG;
 non terminal BLQ;
-non terminal DELIST;
+non terminal DCLLIST;
 non terminal SENTLIST;
 
 non terminal DCL;
@@ -29,13 +29,14 @@ non terminal FORMAL_PARAM;
 non terminal TBAS;
 
 non terminal SENT;
+non terminal INC;
 non terminal ASIG;
 non terminal ID;
 non terminal EXP;
 non terminal OP;
 non terminal OPARIT;
 non terminal FACTOR;
-non terminal SUBPARAMLIST;
+non terminal SUBPPARAMLIST;
 non terminal EXPLIST;
 non terminal PROC_CALL;
 
@@ -45,10 +46,12 @@ non terminal FACTORCOND;
 non terminal OPCOMP;
 
 
-terminal String program, identifier,numeric_integer_const,  numeric_real_const, 
-    string_const, const, puntocoma, punto, begin_, end_, igual, procedure, 
-    function, dospountos, abrirPar, cerrarPar, lambda, masa, menos, 
-    mul, div, mod, coma, puntosIgual;
+terminal String program_, identifier,numeric_integer_const,  numeric_real_const, 
+    string_const, puntoComa, punto, begin_, end_, igual, procedure_, 
+    function_, dosPuntos, abrirPar, cerrarPar, lambda, mas, menos, 
+    mul, div_, mod_, coma, puntosIgual, and_, or_, unit_, const_, var_, int_, 
+    real_, if_, then_, else_, while_, do_, repeat_, until_, for_, downto_, to_, 
+    not_, menor, mayor, menorIgual, mayorIgual;
 
 precedence left mas, menos;
 precedence left mul, div_, and_, or_, mod_;
@@ -56,45 +59,45 @@ precedence left mul, div_, and_, or_, mod_;
 start with PRG;
 
 PRG ::= program_ identifier puntoComa BLQ punto  
-        | unit_ identifier puntoComa DCLLIST punto
-BLQ ::= DCLIST begin_ SENTLIST end_
-DCLIST ::= | DCLIST DCL
-SENTLIST ::= SENT | SENTLIST SENT
+        | unit_ identifier puntoComa DCLLIST punto ;
+BLQ ::= DCLLIST begin_ SENTLIST end_ ;
+DCLLIST ::= | DCLLIST DCL ;
+SENTLIST ::= SENT | SENTLIST SENT ;
 
-DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN
-DEFCTE ::= const_ CTELIST
-CTELIST ::= identifier igual SIMPVALUE puntocoma
-            | CTELIST identifier igual SIMPVALUE puntocoma
+DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN ;
+DEFCTE ::= const_ CTELIST ;
+CTELIST ::= identifier igual SIMPVALUE puntoComa
+            | CTELIST identifier igual SIMPVALUE puntoComa ;
 SIMPVALUE ::= numeric_integer_const 
             | numeric_real_const
-            | string_const
-DEFVAR ::= var_ DEFVARLIST puntcoma
-DEFVARLIST ::= VARLIST dosPuntos TBAS
-            | DEFVARLIST puntoComa VARLIST dosPuntos TBAS
-VARLIST ::= identifier | identifier coma VARLIST
-DEFPROC ::= procedure_ identifier FORMAL_PARAMLIST puntoComa BLQ puntoComa
-DEFFUN ::= function_ identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ puntoComa
-FORMAL_PARAMLIST ::= | abrirPar FORMAL_PARAM cerrarPar
+            | string_const ;
+DEFVAR ::= var_ DEFVARLIST puntoComa ;
+DEFVARLIST ::= VARLIST dosPuntos TBAS 
+            | DEFVARLIST puntoComa VARLIST dosPuntos TBAS ;
+VARLIST ::= identifier | identifier coma VARLIST ;
+DEFPROC ::= procedure_ identifier FORMAL_PARAMLIST puntoComa BLQ puntoComa ;
+DEFFUN ::= function_ identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ puntoComa ;
+FORMAL_PARAMLIST ::= | abrirPar FORMAL_PARAM cerrarPar ;
 FORMAL_PARAM ::= VARLIST dosPuntos TBAS
-                | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM
-TBAS ::= int_ | real_ 
+                | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM ;
+TBAS ::= int_ | real_ ;
 
 SENT ::= ASIG puntoComa | PROC_CALL puntoComa | if_ EXPCOND then_ BLQ else_ BLQ
         | while_ EXPCOND do_ BLQ
         | repeat_ BLQ until_ EXPCOND puntoComa
-        | for_ identifier puntosIgual EXP INC EXP do_ BLQ 
-INC ::= to_ | downto_
-ASIG ::= ID puntosIgual EXP
-ID := identifier
-EXP ::= EXP OP EXP | FACTOR
-OP ::= OPARIT
-OPARIT ::= mas | menos | mul | div_ | mod_
-FACTOR ::= SIMPVALUE | abrirPar EXP cerrarPar | identifier SUBPPARAMLIST
-SUBPPARAMLIST ::= lambda | abrirPar EXPLIST cerrarPar
-EXPLIST ::= EXP | EXP coma EXPLIST
-PROC_CALL ::= identifier SUBPPARAMLIST 
+        | for_ identifier puntosIgual EXP INC EXP do_ BLQ ; 
+INC ::= to_ | downto_ ;
+ASIG ::= ID puntosIgual EXP ;
+ID ::= identifier ;
+EXP ::= EXP OP EXP | FACTOR ;
+OP ::= OPARIT ;
+OPARIT ::= mas | menos | mul | div_ | mod_ ;
+FACTOR ::= SIMPVALUE | abrirPar EXP cerrarPar | identifier SUBPPARAMLIST ;
+SUBPPARAMLIST ::= lambda | abrirPar EXPLIST cerrarPar ;
+EXPLIST ::= EXP | EXP coma EXPLIST ;
+PROC_CALL ::= identifier SUBPPARAMLIST ; 
 
-EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND
-OPLOG ::= or_ | and_
-FACTORCOND ::= EXP OPCOMP EXP | abrirPar EXP cerarPar | not_ FACTORCOND
-OPCOMP ::= menor | mayor | menorIgual | mayorIgual | igual 
+EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND ;
+OPLOG ::= or_ | and_ ;
+FACTORCOND ::= EXP OPCOMP EXP | abrirPar EXP cerrarPar | not_ FACTORCOND ;
+OPCOMP ::= menor | mayor | menorIgual | mayorIgual | igual ;
