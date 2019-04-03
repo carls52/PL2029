@@ -1,5 +1,5 @@
-package traductorcpascal;
-import java_cup.runtime.*;
+package traductorPascalC;
+import java_cup.runtime.Symbol;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 

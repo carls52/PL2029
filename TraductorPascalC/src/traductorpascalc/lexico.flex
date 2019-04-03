@@ -1,6 +1,6 @@
 package traductorPascalC;
 import java.io.*;
-import java_cup.runtime.*;
+import java_cup.runtime.Symbol;
 
 %%
 
@@ -37,7 +37,7 @@ import java_cup.runtime.*;
 "procedure"	{return new Symbol(sym.procedure_);}
 "function"	{return new Symbol(sym.function_);}
 "lambda"	{return new Symbol(sym.lambda);}
-"return"	{return new Symbol(sym.return_);}
+
 "const"         {return new Symbol(sym.const_);}
 "INTEGER"	{return new Symbol(sym.int_);}
 "REAL"          {return new Symbol(sym.real_);}
@@ -54,7 +54,7 @@ import java_cup.runtime.*;
 "begin" 	{return new Symbol(sym.begin_);}
 "end"           {return new Symbol(sym.end_);}
 "const"         {return new Symbol(sym.const_);}
-"var"           {return new Symbol(sym.var_);}
+
 "or"      	{return new Symbol(sym.or_);}
 "and"     	{return new Symbol(sym.and_);}
 "and"     	{return new Symbol(sym.and_);}
@@ -74,15 +74,15 @@ import java_cup.runtime.*;
 }
 		
 [+-]?[0-9]+"."[0-9]+    {
-	return new Symbol (sym.numeric_const_real, yytext());
+	return new Symbol (sym.numeric_real_const, yytext());
 }
 
 [+-]?[0-9]+[eE][+-]?[0-9]+  {
-	return new Symbol (sym.numeric_const_real, yytext());
+	return new Symbol (sym.numeric_real_const, yytext());
 }
 
 [+-]?[0-9]+"."[0-9]]+[eE][+-]?[0-9]+    {
-	return new Symbol (sym.numeric_const_real, yytext());
+	return new Symbol (sym.numeric_real_const, yytext());
 }
 
 "''" {
@@ -99,5 +99,6 @@ import java_cup.runtime.*;
 [/n/t/r] {}
 
 .   {
-	System.out.println("Error "+ yytext());
+ System.out.println("Caracter erroneo: "+yytext() + " " + yyline + " " + yycolumn); 
+
 }
