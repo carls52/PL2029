@@ -85,7 +85,7 @@ import java_cup.runtime.Symbol;
 	return new Symbol (sym.numeric_real_const, yytext());
 }
 
-"''" {
+'([^']|"''")+' {
 	return new Symbol (sym.string_const, yytext());
 }
 

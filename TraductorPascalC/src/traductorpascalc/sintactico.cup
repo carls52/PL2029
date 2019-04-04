@@ -93,7 +93,7 @@ EXP ::= EXP OP EXP | FACTOR ;
 OP ::= OPARIT ;
 OPARIT ::= mas | menos | mul | div_ | mod_ ;
 FACTOR ::= SIMPVALUE | abrirPar EXP cerrarPar | identifier SUBPPARAMLIST ;
-SUBPPARAMLIST ::= lambda | abrirPar EXPLIST cerrarPar ;
+SUBPPARAMLIST ::= | abrirPar EXPLIST cerrarPar ;
 EXPLIST ::= EXP | EXP coma EXPLIST ;
 PROC_CALL ::= identifier SUBPPARAMLIST ; 
 
