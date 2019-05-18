@@ -5,10 +5,7 @@
  */
 package traductorpascalc;
 
-/**
- *
- * @author Carlos Gil Sabrido
- */
 public class CteList {
-    
+   String valor ="";
+   public CteList(){}
 }

@@ -73,10 +73,26 @@ DCLLIST ::= {:
 :};
 SENTLIST ::= SENT | SENTLIST SENT ;
 
-DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN ;
-DEFCTE ::= const_ CTELIST ;
-CTELIST ::= identifier igual SIMPVALUE puntoComa
-            | CTELIST identifier igual SIMPVALUE puntoComa ;
+DCL ::= DEFCTE {:
+        RESULT = new Def()
+:}  | DEFVAR{:
+        RESULT = new Def()
+:}  | DEFPROC{:
+        RESULT = new Def()
+:}  | DEFFUN{:
+        RESULT = new Def()
+:};
+DEFCTE ::= const_ CTELIST:cList {:
+        RESULT = new DefCte();
+        RESULT.valor = cList.valor;
+:};
+CTELIST ::= identifier:id igual SIMPVALUE:sv puntoComa {:
+        RESULT = new CteList();
+        RESULT.valor = "#define" + id + " " + sv +"; \n";
+:}  | CTELIST:cList identifier:id igual SIMPVALUE:sv puntoComa {:
+        RESULT = new DefCte();
+        RESULT.valor = cList.valor + "#define" + id + " " + sv + "; \n"; 
+:};
 SIMPVALUE ::= numeric_integer_const:nic {:
         RESULT = new Constantes();
         RESULT.valor = nic;

@@ -5,10 +5,7 @@
  */
 package traductorpascalc;
 
-/**
- *
- * @author Carlos Gil Sabrido
- */
 public class DefCte {
-    
+    String valor = "";
+    public DefCte(){}
 }
