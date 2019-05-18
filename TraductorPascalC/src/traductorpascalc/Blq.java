@@ -8,6 +8,7 @@ package traductorpascalc;
 
 public class Blq {
     String valor = "";
+    String cab = "";
     Boolean main = false;
     public Blq(){}
     public Blq(Boolean m) 

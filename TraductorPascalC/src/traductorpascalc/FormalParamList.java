@@ -5,13 +5,11 @@
  */
 package traductorpascalc;
 
-public class VarList {
-    String valor = "";
-    String tipo = "";
-    Boolean funcion = false;
-    public VarList(){}
-    public VarList(Boolean f)
-    {
-        this.funcion = f;
-    }
+/**
+ *
+ * @author Carlos Gil Sabrido
+ */
+public class FormalParamList {
+        String valor = "";
+        public FormalParamList(){}
 }

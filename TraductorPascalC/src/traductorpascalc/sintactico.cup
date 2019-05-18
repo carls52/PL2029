@@ -58,14 +58,23 @@ precedence left mul, div_, and_, or_, mod_;
 
 start with PRG;
 
-PRG ::= program_ identifier puntoComa {:b.main=true:}BLQ:b punto  
+PRG ::= program_ identifier:id puntoComa {:b.main=true:}BLQ:b punto {:
+        String res = b.cab + b.valor + "\n ."
+        System.out.println(b.cab+);
+:} 
         | unit_ identifier puntoComa DCLLIST punto ;
 BLQ ::= DCLLIST:dList begin_ SENTLIST:sList end_ {:
         RESULT = new Blq();
         if(RESULT.main)
-            RESULT.valor = dList.valor + "\n int main (void) \n { \n" + sList.valor + "}";
+        {
+            RESULT.cab = dList.valor
+            RESULT.valor = RESULT.cab + "\n int main (void) \n { \n" + sList.valor + "}";
+        }
         else
-            RESULT.valor = dList.valor + sList.valor + "}";
+        {       
+            RESULT.cab = dList.valor;
+            RESULT.valor = "{\n"+ sList.valor + "}\n";
+        }
 :};
 DCLLIST ::= {:
         RESULT = new DcList();
@@ -74,7 +83,13 @@ DCLLIST ::= {:
         RESULT = new DcList();
         RESULT.valor = dList.valor + d.valor;
 :};
-SENTLIST ::= SENT | SENTLIST SENT ;
+SENTLIST ::= SENT:s{:
+        RESULT = new SentList();
+        RESULT.valor = s.valor;
+:}  | SENTLIST:sList SENT:s {:
+        RESULT = new SentList();
+        RESULT = sList.valor + s.valor
+:};
 
 DCL ::= DEFCTE:dCte {:
         RESULT = new Def();
@@ -132,12 +147,26 @@ VARLIST ::= identifier:id {:
 :};
 DEFPROC ::= procedure_ identifier:id FORMAL_PARAMLIST:fpList puntoComa BLQ:b puntoComa {:
         RESULT = new DefProc();
-        RESULT.valor = "void " + id;
+        RESULT.valor = b.cab + "\n void " + id + fpList.valor + "\n" + b.valor;
 :};
-DEFFUN ::= function_ identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ puntoComa ;
-FORMAL_PARAMLIST ::= | abrirPar FORMAL_PARAM cerrarPar ;
-FORMAL_PARAM ::= VARLIST dosPuntos TBAS
-                | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM ;
+DEFFUN ::= function_ identifier:id FORMAL_PARAMLIST:fp dosPuntos TBAS:t puntoComa BLQ:b puntoComa {:
+        RESULT = new DefFun();
+        RESULT = b.cab + "\n" + t.valor + id + fp.valor + b.valor;
+:};
+FORMAL_PARAMLIST ::= {:
+        RESULT = new FormalParamList();
+        RESULT.valor = "( void )";
+:}  | abrirPar FORMAL_PARAM:fp cerrarPar {:
+        RESULT = new FormalParamList();
+        RESULT.valor = "("+fp.valor+")"
+:};
+FORMAL_PARAM ::= VARLIST:vList dosPuntos TBAS:t {:
+        RESULT = new FormalParam();
+        RESULT.valor = t.valor + " " + vList.valor;
+:}  | VARLIST:vList dosPuntos TBAS:t puntoComa FORMAL_PARAM:fp {:
+        RESULT = new FormalParam();
+        RESULT.valor = t.valor + vList.valor + ", " + fp.valor;
+:};
 TBAS ::= int_ {:
         RESULT = new Tipo();
         RESULT.valor = "int";        
@@ -146,7 +175,13 @@ TBAS ::= int_ {:
         RESULT.valor = "float";        
 :};
 
-SENT ::= ASIG puntoComa | PROC_CALL puntoComa | if_ EXPCOND then_ BLQ else_ BLQ
+SENT ::= ASIG:a puntoComa{:
+        RESULT = new Sent();
+        RESULT.valor = a.valor + ": \n";
+:}  | PROC_CALL:pc puntoComa{:
+        RESULT = new Sent();
+        RESULT.valor = pc.valor + ";" 
+:} | if_ EXPCOND then_ BLQ else_ BLQ
         | while_ EXPCOND do_ BLQ
         | repeat_ BLQ until_ EXPCOND puntoComa
         | for_ identifier puntosIgual EXP INC EXP do_ BLQ ; 
@@ -159,7 +194,13 @@ ID ::= identifier:id{:
         RESULT=new Id()
         RESULT.valor="id"
 :} ;
-EXP ::= EXP OP EXP | FACTOR ;
+EXP ::= EXP:e1 OP:o EXP:e2 {:
+        RESULT = new Exp();
+        RESULT.valor = e1.valor + o.valor + e2.valor; 
+:}  | FACTOR:f {:
+        RESULT = new Exp();
+        RESULT.valor = f.valor; 
+:};
 OP ::= OPARIT:op{:
         RESULT = op.valor:
 };
