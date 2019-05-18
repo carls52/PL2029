@@ -5,13 +5,11 @@
  */
 package traductorpascalc;
 
-
-public class Blq {
+/**
+ *
+ * @author Carlos Gil Sabrido
+ */
+public class DefProc {
     String valor = "";
-    Boolean main = false;
-    public Blq(){}
-    public Blq(Boolean m) 
-    {
-        this.main = m;
-    }
+    public DefProc(){}
 }

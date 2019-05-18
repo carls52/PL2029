@@ -5,13 +5,7 @@
  */
 package traductorpascalc;
 
-
-public class Blq {
+public class VarList {
     String valor = "";
-    Boolean main = false;
-    public Blq(){}
-    public Blq(Boolean m) 
-    {
-        this.main = m;
-    }
+    public VarList(){}
 }

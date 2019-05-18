@@ -58,11 +58,14 @@ precedence left mul, div_, and_, or_, mod_;
 
 start with PRG;
 
-PRG ::= program_ identifier puntoComa BLQ punto  
+PRG ::= program_ identifier puntoComa {:b.main=true:}BLQ:b punto  
         | unit_ identifier puntoComa DCLLIST punto ;
 BLQ ::= DCLLIST:dList begin_ SENTLIST:sList end_ {:
         RESULT = new Blq();
-        RESULT.valor = dList.valor + "\n int main (void) \n { \n" + sList.valor + "}";
+        if(RESULT.main)
+            RESULT.valor = dList.valor + "\n int main (void) \n { \n" + sList.valor + "}";
+        else
+            RESULT.valor = dList.valor + sList.valor + "}";
 :};
 DCLLIST ::= {:
         RESULT = new DcList();
@@ -73,14 +76,18 @@ DCLLIST ::= {:
 :};
 SENTLIST ::= SENT | SENTLIST SENT ;
 
-DCL ::= DEFCTE {:
-        RESULT = new Def()
-:}  | DEFVAR{:
-        RESULT = new Def()
-:}  | DEFPROC{:
-        RESULT = new Def()
-:}  | DEFFUN{:
-        RESULT = new Def()
+DCL ::= DEFCTE:dCte {:
+        RESULT = new Def();
+        RESULT.valor = dCte.valor;
+:}  | DEFVAR:dVar{:
+        RESULT = new Def();
+        RESULT.valor = dVar.valor;
+:}  | DEFPROC:dProc{:
+        RESULT = new Def();
+        RESULT.valor = dProc.valor;
+:}  | DEFFUN:dFun{:
+        RESULT = new Def();
+        RESULT.valor = dFun.valor;
 :};
 DEFCTE ::= const_ CTELIST:cList {:
         RESULT = new DefCte();
@@ -88,10 +95,10 @@ DEFCTE ::= const_ CTELIST:cList {:
 :};
 CTELIST ::= identifier:id igual SIMPVALUE:sv puntoComa {:
         RESULT = new CteList();
-        RESULT.valor = "#define" + id + " " + sv +"; \n";
+        RESULT.valor = "#define " + id + " " + sv +"; \n";
 :}  | CTELIST:cList identifier:id igual SIMPVALUE:sv puntoComa {:
         RESULT = new DefCte();
-        RESULT.valor = cList.valor + "#define" + id + " " + sv + "; \n"; 
+        RESULT.valor = cList.valor + "#define " + id + " " + sv + "; \n"; 
 :};
 SIMPVALUE ::= numeric_integer_const:nic {:
         RESULT = new Constantes();
@@ -103,11 +110,30 @@ SIMPVALUE ::= numeric_integer_const:nic {:
         RESULT = new Constantes();
         RESULT.valor = sc;
 :};
-DEFVAR ::= var_ DEFVARLIST puntoComa ;
-DEFVARLIST ::= VARLIST dosPuntos TBAS 
-            | DEFVARLIST puntoComa VARLIST dosPuntos TBAS ;
-VARLIST ::= identifier | identifier coma VARLIST ;
-DEFPROC ::= procedure_ identifier FORMAL_PARAMLIST puntoComa BLQ puntoComa ;
+DEFVAR ::= var_:var DEFVARLIST:dvList puntoComa {:
+        RESULT = new Def();
+        RESULT.valor = dvList.cab + " " + var + dvList.valor + ";\n" ;
+:};
+DEFVARLIST ::= VARLIST:vList dosPuntos TBAS:t {:
+        RESULT = new DefVarList();
+        RESULT.valor = vList.valor;
+        RESULT.cab = t.valor;
+:}  | DEFVARLIST:dvList puntoComa VARLIST:vList dosPuntos TBAS:t {:
+        RESULT = new DefVarList();
+        RESULT.valor = dvList.valor + ";\n" + t.valor+ " " + vList.valor ;
+        RESULT.cab = dvList.cab;
+:};
+VARLIST ::= identifier:id {:
+        RESULT = new VarList();
+        RESULT.valor = id;
+:}  | identifier:id coma VARLIST:vList {:
+        RESULT = new VarList();
+        RESULT = id + ", " + vList.valor;
+:};
+DEFPROC ::= procedure_ identifier:id FORMAL_PARAMLIST:fpList puntoComa BLQ:b puntoComa {:
+        RESULT = new DefProc();
+        RESULT.valor = "void " + id;
+:};
 DEFFUN ::= function_ identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ puntoComa ;
 FORMAL_PARAMLIST ::= | abrirPar FORMAL_PARAM cerrarPar ;
 FORMAL_PARAM ::= VARLIST dosPuntos TBAS
@@ -117,7 +143,7 @@ TBAS ::= int_ {:
         RESULT.valor = "int";        
 :}  | real_ {:
         RESULT = new Tipo();
-        RESULT.valor = "int";        
+        RESULT.valor = "float";        
 :};
 
 SENT ::= ASIG puntoComa | PROC_CALL puntoComa | if_ EXPCOND then_ BLQ else_ BLQ
