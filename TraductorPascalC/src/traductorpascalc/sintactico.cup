@@ -68,9 +68,16 @@ DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN ;
 DEFCTE ::= const_ CTELIST ;
 CTELIST ::= identifier igual SIMPVALUE puntoComa
             | CTELIST identifier igual SIMPVALUE puntoComa ;
-SIMPVALUE ::= numeric_integer_const 
-            | numeric_real_const
-            | string_const ;
+SIMPVALUE ::= numeric_integer_const:nic {:
+        RESULT = new Constantes();
+        RESULT.valor = nic;
+:}  | numeric_real_const:nrc {:
+        RESULT = new Constantes();
+        RESULT.valor = nrc;
+:}  | string_const:sc {:
+        RESULT = new Constantes();
+        RESULT.valor = sc;
+:};
 DEFVAR ::= var_ DEFVARLIST puntoComa ;
 DEFVARLIST ::= VARLIST dosPuntos TBAS 
             | DEFVARLIST puntoComa VARLIST dosPuntos TBAS ;
@@ -80,22 +87,69 @@ DEFFUN ::= function_ identifier FORMAL_PARAMLIST dosPuntos TBAS puntoComa BLQ pu
 FORMAL_PARAMLIST ::= | abrirPar FORMAL_PARAM cerrarPar ;
 FORMAL_PARAM ::= VARLIST dosPuntos TBAS
                 | VARLIST dosPuntos TBAS puntoComa FORMAL_PARAM ;
-TBAS ::= int_ | real_ ;
+TBAS ::= int_ {:
+        RESULT = new Tipo();
+        RESULT.valor = "int";        
+:}  | real_ {:
+        RESULT = new Tipo();
+        RESULT.valor = "int";        
+:};
 
 SENT ::= ASIG puntoComa | PROC_CALL puntoComa | if_ EXPCOND then_ BLQ else_ BLQ
         | while_ EXPCOND do_ BLQ
         | repeat_ BLQ until_ EXPCOND puntoComa
         | for_ identifier puntosIgual EXP INC EXP do_ BLQ ; 
 INC ::= to_ | downto_ ;
-ASIG ::= ID puntosIgual EXP ;
-ID ::= identifier ;
+ASIG ::= ID:id puntosIgual:p EXP:e{:
+        RESULT = new Asig();
+        RESULT = id.valor + " = " + e.valor;
+:} ;
+ID ::= identifier:id{:
+        RESULT=new Id()
+        RESULT.valor="id"
+:} ;
 EXP ::= EXP OP EXP | FACTOR ;
-OP ::= OPARIT ;
-OPARIT ::= mas | menos | mul | div_ | mod_ ;
-FACTOR ::= SIMPVALUE | abrirPar EXP cerrarPar | identifier SUBPPARAMLIST ;
-SUBPPARAMLIST ::= | abrirPar EXPLIST cerrarPar ;
+OP ::= OPARIT:op{:
+        RESULT = op.valor:
+};
+OPARIT ::= mas{:
+        RESULT = new Operadores();
+        RESULT.valor = "+";
+:} | menos{:
+        RESULT = new Operadores();
+        RESULT.valor = "-";
+:} | mul{:
+        RESULT = new Operadores();
+        RESULT.valor = "*";
+:} | div_{:
+        RESULT = new Operadores();
+        RESULT.valor = "/";
+:} | mod_{:
+        RESULT = new Operadores();
+        RESULT.valor = "%";
+:} ;
+FACTOR ::= SIMPVALUE:sv {:
+        RESULT=new Factor();
+        RESULT.valor= sv.valor; 
+:}  | abrirPar EXP:e cerrarPar {:
+        RESULT=new Factor();
+        RESULT.valor = "(" + e.valor + ")"; 
+:}  | identifier:id SUBPPARAMLIST:sublist {:
+        RESULT=new Factor();
+        RESULT.valor = id.valor + sublist.valor; 
+:};
+SUBPPARAMLIST ::= {:
+        RESULT = new SubParamList();
+        RESULT.valor = "()"
+:}  | abrirPar EXPLIST:eList cerrarPar {:
+        RESULT = new SubParamList();
+        RESULT.valor = "(" + eList.valor + ")"
+:};
 EXPLIST ::= EXP | EXP coma EXPLIST ;
-PROC_CALL ::= identifier SUBPPARAMLIST ; 
+PROC_CALL ::= identifier:id SUBPPARAMLIST:subList {:
+        RESULT = new ProcCall();
+        RESULT.valor = id + subList.valor;
+:} ; 
 
 EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND ;
 OPLOG ::= or_ | and_ ;
