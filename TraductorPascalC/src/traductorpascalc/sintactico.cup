@@ -60,8 +60,17 @@ start with PRG;
 
 PRG ::= program_ identifier puntoComa BLQ punto  
         | unit_ identifier puntoComa DCLLIST punto ;
-BLQ ::= DCLLIST begin_ SENTLIST end_ ;
-DCLLIST ::= | DCLLIST DCL ;
+BLQ ::= DCLLIST:dList begin_ SENTLIST:sList end_ {:
+        RESULT = new Blq();
+        RESULT.valor = dList.valor + "\n int main (void) \n { \n" + sList.valor + "}";
+:};
+DCLLIST ::= {:
+        RESULT = new DcList();
+        RESULT.valor = "";
+:}  | DCLLIST:dList DCL:d {: 
+        RESULT = new DcList();
+        RESULT.valor = dList.valor + d.valor;
+:};
 SENTLIST ::= SENT | SENTLIST SENT ;
 
 DCL ::= DEFCTE | DEFVAR | DEFPROC | DEFFUN ;
