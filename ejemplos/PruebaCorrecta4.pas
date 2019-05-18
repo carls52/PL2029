@@ -1,16 +1,16 @@
 program ejemplo4;
 
-var 
-    a:REAL; 
-    b:REAL; 
+VAR
+    a:REAL;
+    b:REAL;
     c:REAL;
-begin
+BEGIN
     a:= 1.0;
     b:= 1.0;
     c:= 3.0;
     while a = b do
-    begin
+    BEGIN
         b := c;
-    end
-        
-end.
+    END
+
+END.

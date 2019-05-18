@@ -1,18 +1,18 @@
 program ejemplo3;
-var 
-    a:INTEGER; 
+VAR
+    a:INTEGER;
     b:INTEGER;
-begin
+BEGIN
 	a := 1;
 	b := 2;
 	if a < b
 	then
-            begin
+            BEGIN
             a := 3;
-            end	
+            END
         else
-            begin
+            BEGIN
             b := 3;
-            
-end.
-{falta un end}
+
+END.
+{falta un END}

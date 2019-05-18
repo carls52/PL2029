@@ -1,17 +1,17 @@
 program ejemplo4;
 
-var 
-    a:REAL; 
-    b:INTEGER; 
+VAR
+    a:REAL;
+    b:INTEGER;
     c:REAL;
-begin
+BEGIN
     a:= 1.0;
     b:= 1.0;
     c:= 3.0;
     while a = b do
-    begin
+    BEGIN
         b := c;
-    end
-        
-end.
+    END
+
+END.
 {b no es un real}

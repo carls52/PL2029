@@ -1,11 +1,11 @@
 program ejemplo2;
 
-var 
-    a:INTEGER; 
-    b:INTEGER; 
+VAR
+    a:INTEGER;
+    b:INTEGER;
     c:INTEGER;
 
-begin
+BEGIN
 c = a + b;
-end.
+END.
 {asignacion mal hecha}

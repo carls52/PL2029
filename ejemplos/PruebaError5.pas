@@ -1,17 +1,17 @@
 program ejemplo5;
 
-var 
-    a:INTEGER; 
-    b:INTEGER; 
+VAR
+    a:INTEGER;
+    b:INTEGER;
     c:INTEGER;
-begin
+BEGIN
     a:= 1;
     b:= 1;
     c:= 3;
     repeat
-        begin
+        BEGIN
             b := b +1;
-        end
+        END
     until b == c;
-end.
+END.
 {hay 2 = en vez de uno}

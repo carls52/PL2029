@@ -1,8 +1,9 @@
 package traductorPascalC;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
-/**
-*/
+
 public class Analizador{
     public static void main(String argv[])
     {
@@ -13,9 +14,12 @@ public class Analizador{
             for (int i = 0; i < argv.length; i++) {
                 AnalizadorLexico lexico = null;
                 try {
-                lexico = new AnalizadorLexico( new java.io.FileReader(argv[i]));
-                parser sintactico = new parser(lexico);
-                sintactico.parse();
+                    String salida = argv[i].substring(0,argv[i].length()-3) +".c";
+                    PrintStream o = new PrintStream (new File(salida));
+                    System.setOut(o);
+                    lexico = new AnalizadorLexico( new java.io.FileReader(argv[i]));
+                    parser sintactico = new parser(lexico);
+                    sintactico.parse();
                 }
                 catch (java.io.FileNotFoundException e) {
                     System.out.println("Archivo \""+argv[i]+"\" no encontrado.");
