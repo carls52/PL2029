@@ -59,7 +59,7 @@ precedence left mul, div_, and_, or_, mod_;
 
 start with PRG;
 
-PRG ::= program_ identifier:id puntoComa {:System.out.println("funciona antes de BLQ");:} BLQ:b punto {:
+PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
         
         //String res = b.cab + b.valor + "\n .";
        // RESULT = b.cab + "int main (void) {" + b.valor + b.cierre;

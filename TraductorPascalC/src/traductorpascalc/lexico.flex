@@ -1,4 +1,4 @@
-package traductorPascalC;
+package traductorpascalc;
 import java.io.*;
 import java_cup.runtime.Symbol;
 
@@ -36,7 +36,7 @@ import java_cup.runtime.Symbol;
 "var"           {return new Symbol (sym.var_);}
 "procedure"	{return new Symbol(sym.procedure_);}
 "function"	{return new Symbol(sym.function_);}
-"lambda"	{return new Symbol(sym.lambda);}
+
 
 "const"         {return new Symbol(sym.const_);}
 "INTEGER"	{return new Symbol(sym.int_);}
