@@ -6,6 +6,6 @@
 package traductorpascalc;
 
 public class SubParamList {
-    String valor;
+    String valor="";
     public SubParamList() {}
 }
