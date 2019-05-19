@@ -5,7 +5,7 @@
  */
 package traductorpascalc;
 
-public class SubParamList {
+public class SubPparamList {
     String valor= "";
-    public SubParamList() {}
+    public SubPparamList() {}
 }

@@ -37,7 +37,7 @@ non terminal Exp EXP;
 non terminal Op OP;
 non terminal Operadores OPARIT;
 non terminal Factor FACTOR;
-non terminal SupParamList SUBPPARAMLIST;
+non terminal SubPparamList SUBPPARAMLIST;
 non terminal ExpList EXPLIST;
 non terminal ProcCall PROC_CALL;
 
@@ -175,7 +175,7 @@ TBAS ::= int_ {:
 
 SENT ::= ASIG:a puntoComa{:
         RESULT = new Sent();
-        RESULT.valor = a.valor + ": \n";
+        RESULT.valor = a.valor + "; \n";
 :}  | PROC_CALL:pc puntoComa{:
         RESULT = new Sent();
         RESULT.valor = pc.valor + ";" ;
@@ -227,13 +227,13 @@ FACTOR ::= SIMPVALUE:sv {:
         RESULT.valor = "(" + e.valor + ")"; 
 :}  | identifier:id SUBPPARAMLIST:sublist {:
         RESULT=new Factor();
-        RESULT.valor = id.valor + sublist.valor; 
+        RESULT.valor = id + sublist.valor; 
 :};
 SUBPPARAMLIST ::= {:
-        RESULT = new SubParamList();
+        RESULT = new SubPparamList();
         RESULT.valor = "()";
 :}  | abrirPar EXPLIST:eList cerrarPar {:
-        RESULT = new SubParamList();
+        RESULT = new SubPparamList();
         RESULT.valor = "(" + eList.valor + ")";
 :};
 EXPLIST ::= EXP:e{:

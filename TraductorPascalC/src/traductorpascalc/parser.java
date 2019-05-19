@@ -1143,10 +1143,10 @@ class CUP$parser$actions {
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int sublistleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int sublistright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		SupParamList sublist = (SupParamList)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		SubPparamList sublist = (SubPparamList)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT=new Factor();
-        RESULT.valor = id.valor + sublist.valor; 
+        RESULT.valor = id + sublist.valor; 
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("FACTOR",23, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1155,9 +1155,9 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 52: // SUBPPARAMLIST ::= 
             {
-              SupParamList RESULT =null;
+              SubPparamList RESULT =null;
 		
-        RESULT = new SubParamList();
+        RESULT = new SubPparamList();
         RESULT.valor = "()";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SUBPPARAMLIST",24, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1167,12 +1167,12 @@ class CUP$parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 53: // SUBPPARAMLIST ::= abrirPar EXPLIST cerrarPar 
             {
-              SupParamList RESULT =null;
+              SubPparamList RESULT =null;
 		int eListleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int eListright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		ExpList eList = (ExpList)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
-        RESULT = new SubParamList();
+        RESULT = new SubPparamList();
         RESULT.valor = "(" + eList.valor + ")";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SUBPPARAMLIST",24, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -1221,7 +1221,7 @@ class CUP$parser$actions {
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int subListleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int subListright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		SupParamList subList = (SupParamList)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		SubPparamList subList = (SubPparamList)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT = new ProcCall();
         RESULT.valor = id + subList.valor;
