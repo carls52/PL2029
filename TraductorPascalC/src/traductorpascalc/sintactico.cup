@@ -61,18 +61,19 @@ start with PRG;
 
 PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
         
-        //String res = b.cab + b.valor + "\n .";
-       // RESULT = b.cab + "int main (void) {" + b.valor + b.cierre;
-       // System.out.println(RESULT);
+        RESULT = b.cab + "void main (void) \n{\n" + b.valor + b.cierre;
+        System.out.println("RESULT:\n"+RESULT);
+
         System.out.println("funcionaAA");
 :} 
         | unit_ identifier puntoComa DCLLIST punto ;
+
 BLQ ::= DCLLIST:dList begin_ SENTLIST:sList end_ {:
         RESULT = new Blq();
         
-       // RESULT.cab = dList.valor;
-       // RESULT.cierre = "}";
-       // RESULT.valor = sList.valor;
+        RESULT.cab = dList.valor;
+        RESULT.cierre = "}";
+        RESULT.valor = sList.valor;
 :};
 DCLLIST ::= {:
         RESULT = new DcList();
@@ -231,7 +232,7 @@ FACTOR ::= SIMPVALUE:sv {:
 :};
 SUBPPARAMLIST ::= {:
         RESULT = new SubPparamList();
-        RESULT.valor = "()";
+        RESULT.valor = " ";
 :}  | abrirPar EXPLIST:eList cerrarPar {:
         RESULT = new SubPparamList();
         RESULT.valor = "(" + eList.valor + ")";
@@ -245,7 +246,10 @@ EXPLIST ::= EXP:e{:
 :};
 PROC_CALL ::= identifier:id SUBPPARAMLIST:subList {:
         RESULT = new ProcCall();
-        RESULT.valor = id + subList.valor;
+        if (sublist.valor == " ")
+            RESULT.valor = id + "()";
+        else
+            RESULT.valor = id + subList.valor;
 :} ; 
 
 EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND ;

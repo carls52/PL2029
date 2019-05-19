@@ -385,9 +385,9 @@ class CUP$parser$actions {
 		Blq b = (Blq)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
         
-        //String res = b.cab + b.valor + "\n .";
-       // RESULT = b.cab + "int main (void) {" + b.valor + b.cierre;
-       // System.out.println(RESULT);
+        RESULT = b.cab + "void main (void) \n{\n" + b.valor + b.cierre;
+        System.out.println("RESULT:\n"+RESULT);
+
         System.out.println("funcionaAA");
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("PRG",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
@@ -416,9 +416,9 @@ class CUP$parser$actions {
 		
         RESULT = new Blq();
         
-       // RESULT.cab = dList.valor;
-       // RESULT.cierre = "}";
-       // RESULT.valor = sList.valor;
+        RESULT.cab = dList.valor;
+        RESULT.cierre = "}";
+        RESULT.valor = sList.valor;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("BLQ",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1158,7 +1158,7 @@ class CUP$parser$actions {
               SubPparamList RESULT =null;
 		
         RESULT = new SubPparamList();
-        RESULT.valor = "()";
+        RESULT.valor = " ";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SUBPPARAMLIST",24, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1224,7 +1224,10 @@ class CUP$parser$actions {
 		SubPparamList subList = (SubPparamList)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT = new ProcCall();
-        RESULT.valor = id + subList.valor;
+        if (sublist.valor == " ")
+            RESULT.valor = id + "()";
+        else
+            RESULT.valor = id + subList.valor;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("PROC_CALL",26, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
