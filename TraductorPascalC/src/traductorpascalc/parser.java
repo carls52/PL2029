@@ -987,7 +987,7 @@ class CUP$parser$actions {
 		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT=new Id();
-        RESULT.valor="id";
+        RESULT.valor=id;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ID",19, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1050,7 +1050,7 @@ class CUP$parser$actions {
               Operadores RESULT =null;
 		
         RESULT = new Operadores();
-        RESULT.valor = "+";
+        RESULT.valor = "+ ";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPARIT",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1062,7 +1062,7 @@ class CUP$parser$actions {
               Operadores RESULT =null;
 		
         RESULT = new Operadores();
-        RESULT.valor = "-";
+        RESULT.valor = "- ";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPARIT",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1074,7 +1074,7 @@ class CUP$parser$actions {
               Operadores RESULT =null;
 		
         RESULT = new Operadores();
-        RESULT.valor = "*";
+        RESULT.valor = "* ";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPARIT",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1086,7 +1086,7 @@ class CUP$parser$actions {
               Operadores RESULT =null;
 		
         RESULT = new Operadores();
-        RESULT.valor = "/";
+        RESULT.valor = "/ ";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPARIT",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1224,7 +1224,7 @@ class CUP$parser$actions {
 		SubPparamList subList = (SubPparamList)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT = new ProcCall();
-        if (sublist.valor == " ")
+        if (subList.valor == " ")
             RESULT.valor = id + "()";
         else
             RESULT.valor = id + subList.valor;

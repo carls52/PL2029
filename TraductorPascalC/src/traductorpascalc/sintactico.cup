@@ -191,7 +191,7 @@ ASIG ::= ID:id puntosIgual:p EXP:e{:
 :} ;
 ID ::= identifier:id{:
         RESULT=new Id();
-        RESULT.valor="id";
+        RESULT.valor=id;
 :} ;
 EXP ::= EXP:e1 OP:o EXP:e2 {:
         RESULT = new Exp();
@@ -206,16 +206,16 @@ OP ::= OPARIT:op{:
 :};
 OPARIT ::= mas_{:
         RESULT = new Operadores();
-        RESULT.valor = "+";
+        RESULT.valor = "+ ";
 :} | menos{:
         RESULT = new Operadores();
-        RESULT.valor = "-";
+        RESULT.valor = "- ";
 :} | mul{:
         RESULT = new Operadores();
-        RESULT.valor = "*";
+        RESULT.valor = "* ";
 :} | div_{:
         RESULT = new Operadores();
-        RESULT.valor = "/";
+        RESULT.valor = "/ ";
 :} | mod_{:
         RESULT = new Operadores();
         RESULT.valor = "%";
@@ -246,7 +246,7 @@ EXPLIST ::= EXP:e{:
 :};
 PROC_CALL ::= identifier:id SUBPPARAMLIST:subList {:
         RESULT = new ProcCall();
-        if (sublist.valor == " ")
+        if (subList.valor == " ")
             RESULT.valor = id + "()";
         else
             RESULT.valor = id + subList.valor;
