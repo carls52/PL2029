@@ -386,9 +386,7 @@ class CUP$parser$actions {
 		
         
         RESULT = b.cab + "void main (void) \n{\n" + b.valor + b.cierre;
-        System.out.println("RESULT:\n"+RESULT);
-
-        System.out.println("funcionaAA");
+        System.out.println(""+RESULT);
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("PRG",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -897,7 +895,7 @@ class CUP$parser$actions {
 		ProcCall pc = (ProcCall)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
         RESULT = new Sent();
-        RESULT.valor = pc.valor + ";" ;
+        RESULT.valor = pc.valor + "; \n" ;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

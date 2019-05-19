@@ -1,0 +1,241 @@
+DEFINE
+Identificador: prueba
+Constante decimal entera: 5
+DEFINE
+Identificador: pruebaa
+Constante decimal entera: 6
+int
+Identificador: main
+Simbolo: (
+void
+Simbolo: )
+Simbolo: {
+int
+Identificador: i
+Simbolo: ;
+FOR
+Simbolo: (
+Identificador: i
+ASIGNACION
+Constante decimal entera: 0
+Simbolo: ;
+Identificador: i
+MENOR
+Constante decimal entera: 5
+Simbolo: ;
+Identificador: i
+ASIGNACION
+Identificador: i
+Operador: +
+Constante decimal entera: 1
+Simbolo: )
+Simbolo: {
+Caracter erroneo: 	 7 0
+int
+Identificador: a
+Simbolo: ,
+Identificador: b
+Simbolo: ;
+Caracter erroneo: 	 8 0
+Identificador: a
+ASIGNACION
+Identificador: a
+Operador: +
+Constante decimal entera: 1
+Simbolo: ;
+Caracter erroneo: 	 9 0
+IF
+Simbolo: (
+Identificador: a
+IGUALDAD
+Constante decimal entera: 4
+Simbolo: )
+Caracter erroneo: 	 10 0
+Simbolo: {
+Caracter erroneo: 	 11 0
+Identificador: a
+ASIGNACION
+Constante decimal entera: 3
+Simbolo: ;
+Caracter erroneo: 	 12 0
+Simbolo: }
+Caracter erroneo: 	 13 0
+ELSE
+Caracter erroneo: 	 14 0
+Simbolo: {
+Caracter erroneo: 	 15 0
+Identificador: a
+ASIGNACION
+Constante decimal entera: 6
+Simbolo: ;
+Caracter erroneo: 	 16 0
+Simbolo: }
+Caracter erroneo: 	 17 0
+IF
+Simbolo: (
+Identificador: a
+MENOR
+Constante decimal entera: 4
+Simbolo: )
+Caracter erroneo: 	 18 0
+Simbolo: {
+Caracter erroneo: 	 19 0
+Identificador: a
+ASIGNACION
+Identificador: pepe
+Simbolo: (
+Simbolo: )
+Simbolo: ;
+Caracter erroneo: 	 20 0
+Simbolo: }
+Caracter erroneo: 	 21 0
+ELSE
+Caracter erroneo: 	 22 0
+Simbolo: {
+Caracter erroneo: 	 23 0
+Identificador: a
+ASIGNACION
+Simbolo: (
+Identificador: a
+Operador: +
+Constante decimal entera: 6
+Simbolo: )
+Simbolo: ;
+Caracter erroneo: 	 24 0
+Simbolo: }
+Caracter erroneo: 	 25 0
+IF
+Simbolo: (
+Identificador: a
+MENOR QUE
+Constante decimal entera: 4
+Simbolo: )
+Caracter erroneo: 	 26 0
+Simbolo: {
+Caracter erroneo: 	 27 0
+Identificador: a
+ASIGNACION
+Identificador: pepe
+Simbolo: (
+Identificador: a
+Operador: +
+Constante decimal entera: 1
+Simbolo: ,
+Identificador: b
+Operador: %
+Constante decimal entera: 3
+Simbolo: )
+Simbolo: ;
+Caracter erroneo: 	 28 0
+Simbolo: }
+Caracter erroneo: 	 29 0
+ELSE
+Caracter erroneo: 	 30 0
+Simbolo: {
+Caracter erroneo: 	 31 0
+Identificador: a
+ASIGNACION
+Constante decimal entera: 6
+Simbolo: ;
+Caracter erroneo: 	 32 0
+Simbolo: }
+Simbolo: }
+int
+Identificador: j
+Simbolo: ;
+Identificador: i
+ASIGNACION
+Constante decimal entera: 4
+Simbolo: ;
+DO
+Simbolo: {
+Identificador: i
+ASIGNACION
+Identificador: i
+Operador: *
+Constante decimal entera: 1
+Simbolo: ;
+Simbolo: }
+UNTIL
+Simbolo: (
+Identificador: i
+IGUALDAD
+Constante decimal entera: 5
+Simbolo: )
+WHILE
+Simbolo: (
+Identificador: i
+IGUALDAD
+Constante decimal entera: 0
+Simbolo: )
+Simbolo: {
+Identificador: i
+ASIGNACION
+Identificador: i
+Operador: /
+Constante decimal entera: 1
+Simbolo: ;
+Simbolo: }
+int
+Identificador: x
+Simbolo: ;
+int
+Identificador: y
+Simbolo: ;
+WHILE
+Simbolo: (
+Identificador: x
+MENOR
+Constante decimal entera: 5
+AND
+Identificador: y
+MAYOR
+Constante decimal entera: 3
+Simbolo: )
+Simbolo: {
+Identificador: x
+ASIGNACION
+Identificador: x
+Operador: +
+Constante decimal entera: 1
+Simbolo: ;
+Simbolo: }
+WHILE
+Simbolo: (
+NEGACION
+Identificador: x
+MENOR
+Constante decimal entera: 3
+Simbolo: )
+Simbolo: {
+Identificador: y
+ASIGNACION
+Identificador: y
+Operador: %
+Constante decimal entera: 1
+Simbolo: ;
+Simbolo: }
+return
+Constante decimal entera: 0
+Simbolo: ;
+Simbolo: }
+int
+Identificador: antonio
+Simbolo: (
+int
+Identificador: a
+Simbolo: ,
+int
+Identificador: b
+Simbolo: )
+Simbolo: {
+Identificador: a
+ASIGNACION
+Identificador: a
+Operador: +
+Identificador: b
+Simbolo: ;
+return
+Identificador: a
+Simbolo: ;
+Simbolo: }

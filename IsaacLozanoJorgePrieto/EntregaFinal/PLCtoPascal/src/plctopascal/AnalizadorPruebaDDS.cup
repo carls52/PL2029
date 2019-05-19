@@ -1,0 +1,95 @@
+package plctopascal;
+import java_cup.runtime.*;
+
+terminal Tpc, Tand, Tor, Tnand, Tnor, Txor, Txnor, Tnot, Tpaa, Tpac, Teq, Tdif, Tmenor, Tmayor, Tmenoreq, Tmayoreq;
+terminal Integer Tnumero;
+terminal Boolean Ttrue, Tfalse;
+non terminal Simbolo A,L,J,C;
+
+A ::= L:l Tpc A{:
+if (l.getValor())
+System.out.println("El resultado es True.");
+else
+System.out.println("El resultado es False.");
+:}  | L:l Tpc error {: :}| L:l Tpc{:
+if (l.getValor())
+System.out.println("El resultado es True.");
+else
+System.out.println("El resultado es False.");
+:};
+L ::= L:l Tand J:j{:
+Simbolo s=new Simbolo();
+s.val=true;
+if(l.val && j.val) RESULT = s;
+else {s.val=false; RESULT = s; }
+:} |  L:l Tor J:j{:
+Simbolo s=new Simbolo();
+s.val=true;
+if(l.val || j.val) RESULT = s;
+else {s.val=false; RESULT = s;} 
+:} | L:l Tnand J:j{:
+Simbolo s=new Simbolo();
+s.val=true;
+if(!(l.val && j.val)) RESULT = s;
+else {s.val=false; RESULT = s;} 
+:} | L:l Tnor J:j{:
+Simbolo s=new Simbolo();
+s.val=true;
+if(!(l.val || j.val)) RESULT = s;
+else {s.val=false; RESULT = s;}  
+:} | L:l Txor J:j{:
+Simbolo s=new Simbolo();
+s.val=true;
+if(l.val ^ j.val) RESULT = s;
+else {s.val=false; RESULT = s;} 
+:} | L:l Txnor J:j{:
+Simbolo s=new Simbolo();
+s.val=true;
+if(!(l.val ^ j.val)) RESULT = s;
+else {s.val=false; RESULT = s;} 
+:}| J:j{:
+RESULT = j; 
+:};
+J ::= Tpaa L:l Tpac{:
+RESULT = l; 
+:} | Ttrue{:
+Simbolo s=new Simbolo();
+s.val=true;
+RESULT = s; 
+:}   | Tfalse{:
+Simbolo s=new Simbolo();
+s.val=false;
+RESULT = s; 
+:}  | Tnot Tpaa L:l Tpac{:
+Simbolo s=new Simbolo();
+if(l.val) s.val=false;
+else s.val=true;
+RESULT = s; 
+:} | C:c{:
+RESULT = c; 
+:};
+C ::= Tnumero:v1 Teq Tnumero:v2{:
+Simbolo s=new Simbolo();
+s.val=(v1 == v2);
+RESULT = s; 
+:}|Tnumero:v1 Tdif Tnumero:v2{:
+Simbolo s=new Simbolo();
+s.val=(v1 != v2);
+RESULT = s; 
+:} | Tnumero:v1 Tmenor Tnumero:v2{:
+Simbolo s=new Simbolo();
+s.val=(v1 < v2);
+RESULT = s; 
+:} | Tnumero:v1 Tmayor Tnumero:v2{:
+Simbolo s=new Simbolo();
+s.val=(v1 > v2);
+RESULT = s; 
+:} | Tnumero:v1 Tmenoreq Tnumero:v2{:
+Simbolo s=new Simbolo();
+s.val=(v1 <= v2);
+RESULT = s; 
+:} | Tnumero:v1 Tmayoreq Tnumero:v2{:
+Simbolo s=new Simbolo();
+s.val=(v1 >= v2);
+RESULT = s; 
+:};

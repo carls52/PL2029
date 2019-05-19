@@ -1,0 +1,7 @@
+import java_cup.runtime.*;
+
+terminal Tdefine, Tfor,Tid;
+non terminal S,T;
+
+S ::= S T | T;
+T ::= Tdefine | Tfor | Tid;

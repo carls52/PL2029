@@ -1,0 +1,361 @@
+package plctopascal;
+import java_cup.runtime.*;
+import java.util.Map.Entry;
+
+parser code{:
+	public void syntax_error(String string, Symbol s){
+		System.out.println(string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
+	}
+	public void unrecovered_syntax_error(String string, Symbol s){ 
+                System.out.println("ERROR FATAL: " + string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
+        }
+:}
+
+terminal String Tident, Tconstint, Tconstfloat, Tconstlit, Tdefine, Tpara, Tparc, Tvoid, Tcora, Tcorc, Tcoma, Tint, Tfloat, Tpcoma, Treturn, Tmas, Tmenos, Tpor, Tdiv, Tmod, Teq, Tneg, Tor, Tand, Tigualdad, Tmenor, Tmayor, Tmayori, Tmenori, Telse, Tif, Tdo, Twhile, Tuntil, Tfor, Tasig;
+non terminal PROGRAM;
+non terminal Partes PARTES;
+non terminal Defines DEFINES;
+non terminal Constantes CTES;
+non terminal Part PART;
+non terminal Restpart RESTPART;
+non terminal Blq BLQ;
+non terminal Listparam LISTPARAM;
+non terminal Tipo TYPE;
+non terminal Sentlist SENTLIST;
+non terminal Sent SENT;
+non terminal Identificadores LID;
+non terminal Lexp LEXP;
+non terminal Expresiones EXP;
+non terminal Operadores OP, OPL, OPR;
+non terminal Factor FACTOR;
+non terminal Lcond LCOND;
+non terminal Condicionales COND;
+precedence left Tmas, Tmenos ;
+precedence left Tpor, Tdiv, Tmod, Tand, Tor ;
+
+PROGRAM ::= DEFINES:d PARTES:p {:
+    //Tabular
+    String res = "";
+    int tabs = 0;
+    int flag1= 0;
+    int flag=0;
+    for(int i=0; i<p.valor.length(); i++)
+    {
+        if(i+8<p.valor.length() && p.valor.substring(i,i+8).equals("function")) flag=1;
+        else if(i+9<p.valor.length() && p.valor.substring(i,i+9).equals("procedure")) flag=1;
+        if(i+5<p.valor.length() && p.valor.substring(i,i+5).equals("begin")) { tabs++; if(flag==1)  res+='\t'; flag1=2;  }
+        else if(i+3<p.valor.length() && p.valor.substring(i,i+3).equals("end")) { tabs--;  flag1=3; }
+        if(p.valor.charAt(i)=='\t' || flag1>1)
+        {
+            if(flag1==2 || flag==0) tabs--;
+            if(flag1==3) tabs++;
+            for(int j=0; j<tabs;j++)
+            {
+                res+='\t';
+            }
+            if(flag1==2 ||flag==0) tabs++;
+            if(flag1==3) { tabs--; if(tabs==0) flag=0; }
+            flag1=0;
+        }
+        res+=p.valor.charAt(i);
+    }
+    if(p.libreria)  System.out.println("unit libreria;\n" + d.valor + res + ".");
+    else System.out.println("program main;\n" + d.valor + res + ".");
+:};
+
+DEFINES ::= {:RESULT=new Defines();
+:} | Tdefine Tident:id error DEFINES:d {: 
+        syntax_error("Error de la constante", cur_token); 
+:} | Tdefine Tident:id CTES:c  DEFINES:d1 {:
+        RESULT = new Defines();
+        RESULT.valor = "const \t" + id + " = "+  c.valor + ";\n" + d1.valor;
+:};
+
+CTES ::= Tconstint:ci {:
+    RESULT = new Constantes();
+    RESULT.valor=ci;
+:}| Tconstfloat:cf {:
+    RESULT = new Constantes();
+    RESULT.valor=cf;
+:}| Tconstlit:cl {:
+    RESULT = new Constantes();
+    RESULT.valor=cl;
+:};
+
+PARTES ::= PART:p PARTES:p1 {: 
+    RESULT = new Partes(); RESULT.valor = p.valor + p1.valor; RESULT.libreria = p.libreria && p1.libreria; 
+:} | PART:p2 {: 
+    RESULT = new Partes(); RESULT.valor = p2.valor; RESULT.libreria = p2.libreria; 
+:};
+
+PART ::= TYPE:t RESTPART:r {:
+    RESULT = new Part();
+    if(r.valor.length()>3 && r.valor.substring(0,4).equals("main"))
+        RESULT.valor = r.bloque;
+    else {
+        if(t.valor == "VOID") { RESULT.valor = "procedure " + r.valor + ";" + r.bloque; }
+        else { RESULT.valor = "function " + r.valor + ": " + t.valor+";" + r.bloque;}
+    }
+    RESULT.libreria=r.libreria;
+:};
+
+RESTPART ::= Tident:id Tpara error {: 
+    syntax_error("Error en lista de parámetros de " + id + ". ", cur_token);
+:} Tparc BLQ | Tident:id Tpara LISTPARAM:s {:
+    RESULT = new Restpart();
+    String res="";
+    int actual=2;
+    int valores=0;
+    for(Entry<String,Integer> entry : s.M.entrySet()) {         
+            if(entry.getValue()==0 && actual==1) { res+= " : INTEGER; "; res += entry.getKey(); if(valores+1 == s.M.size()) { if(entry.getValue()==0)  { res+= " : REAL";} else res+=" : INTEGER"; }}
+            else if(entry.getValue()==1 && actual==0) { res+= " : REAL; "; res += entry.getKey(); if(valores+1 == s.M.size()) { if(entry.getValue()==0)  { res+= " : REAL";} else res+=" : INTEGER"; }}
+            else if(valores==0) { res+= entry.getKey(); if(valores+1 == s.M.size()) { if(entry.getValue()==0)  { res+= " : REAL";} else res+=" : INTEGER"; }}
+            else if(valores+1 == s.M.size()) { if(entry.getValue()==0)  { res+= (", "+entry.getKey()+" : REAL");} else res+= (", "+entry.getKey()+" : INTEGER"); }
+            else {  res+= (", "+entry.getKey());}
+            if(entry.getValue()==1) actual=1; 
+            else actual=0;  
+            valores++;
+    }
+    if(s.M.size()==0) RESULT.valor = id;
+    else RESULT.valor = id  + " ("+ res + ")";
+    if(id.equals("main")) RESULT.libreria = false;
+:} Tparc BLQ:b {:
+    String s3 = b.valor.replace("$RE$", "\t"+id + " := ");
+    RESULT.bloque = b.declaraciones + s3 + "\n";
+:}| Tident:id Tpara Tvoid Tparc BLQ:b {:
+    RESULT = new Restpart();
+    RESULT.valor = id;
+    String s3 = b.valor.replace("$RE$", "\t"+id + " := ");
+    RESULT.bloque = b.declaraciones + s3 + "\n";
+    if(id.equals("main")) RESULT.libreria = false;
+:};
+
+BLQ ::= Tcora SENTLIST:s {:
+    RESULT = new Blq();
+    RESULT.valor = "begin\n" + s.valor;
+    RESULT.valor += "end";
+    RESULT.declaraciones = "\n";
+    int actual=2;
+    int valores=0;
+    int anterior=-1;
+    for(Entry<String,Integer> entry : s.M.entrySet()) {     
+            if(entry.getValue()==0 && actual==1) { RESULT.declaraciones+= " : INTEGER;\n"; RESULT.declaraciones += ("\tvar "+entry.getKey()); if(valores+1 == s.M.size()) { if(entry.getValue()==0)  { RESULT.declaraciones+= (entry.getKey()+" : REAL;\n");} else RESULT.declaraciones+= (entry.getKey()+" : INTEGER;\n");}}
+            else if(entry.getValue()==1 && actual==0) { RESULT.declaraciones+= " : REAL;\n"; RESULT.declaraciones += ("\tvar "+entry.getKey());  if(valores+1 == s.M.size()) { if(entry.getValue()==0)  { RESULT.declaraciones+= (entry.getKey()+" : REAL;\n");} else RESULT.declaraciones+= (entry.getKey()+" : INTEGER;\n");}}
+            else if(valores==0) { RESULT.declaraciones += "\tvar "; RESULT.declaraciones+= entry.getKey(); if(valores+1 == s.M.size()) { if(entry.getValue()==0)  { RESULT.declaraciones+= " : REAL;\n";} else RESULT.declaraciones+= " : INTEGER;\n";}}
+            else if(valores+1 == s.M.size()) { if(entry.getValue()==0)  { RESULT.declaraciones+= (", "+entry.getKey()+" : REAL;\n");} else RESULT.declaraciones+= (", "+entry.getKey()+" : INTEGER;\n"); }
+            else {  RESULT.declaraciones+= (", "+entry.getKey());}
+            if(entry.getValue()==1) actual=1; 
+            else actual=0;   
+            valores++;
+    }
+:} Tcorc | Tcora error Tcorc {: 
+syntax_error("Error al final del bloque. ", cur_token);
+:};
+
+LISTPARAM ::= LISTPARAM:l Tcoma TYPE:t Tident:id {:
+    RESULT = new Listparam();
+    for(Entry<String,Integer> entry : l.M.entrySet()) RESULT.M.put(entry.getKey(),entry.getValue());
+    if(t.valor.equals("INTEGER")) RESULT.M.put(id,1);
+    else RESULT.M.put(id,0);
+:} | TYPE:t Tident:id {:
+    RESULT = new Listparam();
+    if(t.valor.equals("INTEGER")) RESULT.M.put(id,1);
+    else RESULT.M.put(id,0);
+:};
+
+TYPE ::= Tvoid {:
+    RESULT = new Tipo();
+    RESULT.valor = "VOID";
+:}| Tint {:
+    RESULT = new Tipo();
+    RESULT.valor = "INTEGER";
+:}| Tfloat {:
+    RESULT = new Tipo();
+    RESULT.valor = "REAL";
+:};
+
+SENTLIST ::= error SENT:s {: 
+    if(s.valor != "") syntax_error("Error en la sentencia anterior a " + s.valor , cur_token);
+    else if(s.retorno != "") syntax_error("Error en la sentencia anterior a return " + s.retorno, cur_token);
+    else {String aux = s.M.toString(); aux = aux.substring(1, aux.length()-3); syntax_error("Error en la sentencia previa a la declaracion de " + aux + ". ", cur_token);};
+:} | SENTLIST:s SENT:s1 {:
+    RESULT = new Sentlist();
+    if(s1.valor!="" && s1.retorno!="")  RESULT.valor = s.valor + "$RE$" + s1.retorno + "\t" + s1.valor;
+    else if(s1.valor!="") RESULT.valor = s.valor + "\t" + s1.valor;
+    else if(s1.retorno!="") RESULT.valor = s.valor + "$RE$" + s1.retorno + s1.valor;
+    else RESULT.valor = s.valor + s1.valor;
+    for(Entry<String,Integer> entry : s.M.entrySet()) RESULT.M.put(entry.getKey(),entry.getValue());
+    for(Entry<String,Integer> entry : s1.M.entrySet()) RESULT.M.put(entry.getKey(),entry.getValue());
+:} | SENT:s2 {:
+    RESULT = new Sentlist();
+    if(s2.valor!="") RESULT.valor = "\t" + s2.valor;
+    else RESULT.valor = s2.valor;
+    if(s2.retorno!="")  RESULT.valor += ( "$RE$" + s2.retorno);
+    RESULT.M = s2.M;
+:};
+
+SENT ::= TYPE:t LID:l Tpcoma {:
+    RESULT = new Sent();
+    if(t.valor.equals("INTEGER")) RESULT.M.put(l.valor,1);
+    else RESULT.M.put(l.valor,0);
+:}|
+    Tident:id Tasig EXP:e Tpcoma {:
+    RESULT = new Sent();
+    RESULT.valor = id + " := " + e.valor +";\n";
+:}|
+    Tident:id Tpara LEXP:l Tparc Tpcoma {:
+    RESULT = new Sent();
+    RESULT.valor = id+"("+l.valor+")"+";\n";
+:}|
+    Tident:id Tpara Tparc Tpcoma {:
+    RESULT = new Sent();
+    RESULT.valor = id+";\n";
+:}|
+    Treturn EXP:e Tpcoma {:
+    RESULT = new Sent();
+    RESULT.retorno =  e.valor + ";\n";
+:}|
+    Tif Tpara LCOND:l Tparc BLQ:b Telse BLQ:b1 {:
+    RESULT = new Sent();
+    RESULT.valor = "if " + l.valor + " then\n" + b.valor + "\n\telse\n" + b1.valor +"\n"; 
+:}|
+    Twhile Tpara LCOND:l Tparc BLQ:b {:
+    RESULT = new Sent();
+    RESULT.valor = "while " + l.valor + " do\n" + b.valor + "\n";
+:}|
+    Tdo BLQ:b Tuntil Tpara LCOND:l Tparc {:
+    RESULT = new Sent();
+    RESULT.valor = "repeat\n" + b.valor + "\n\tuntil " + l.valor+";\n"; 
+:}|
+    Tfor Tpara Tident:id Tasig EXP:e Tpcoma LCOND:l Tpcoma Tident:id2 Tasig EXP:e2 Tparc BLQ:b {:
+    RESULT = new Sent();
+    String[]tokens = l.valor.split("=|<|>|<=|>=");
+    Boolean res = tokens[0].equals(id);
+    if(e2.cmp.equals("+") && e2.aum.equals("1") && id.equals(id2) && res) {
+        RESULT.valor = "for " + id + ":= " + e.valor;
+        String re = "";
+        int flag=1;
+        for(int i=0; i<l.valor.length();i++)
+        {
+            if(flag==0) re += l.valor.charAt(i);
+            if(l.valor.charAt(i)=='<'|| l.valor.charAt(i)=='>') flag=0;
+        }
+        RESULT.valor += (" to " +  re + " do");
+        RESULT.valor  += (b.declaraciones + "\n" + b.valor + "\n");
+    } else if(e2.cmp.equals("-") && e2.aum.equals("1") && id.equals(id2) && res) {
+        RESULT.valor = "for " + id + ":= " + e.valor;
+        String re = "";
+        int flag=1;
+        for(int i=0; i<l.valor.length();i++)
+        {
+            if(flag==0) re += l.valor.charAt(i);
+            if(l.valor.charAt(i)=='<'|| l.valor.charAt(i)=='>') flag=0;
+        }
+        RESULT.valor += (" downto " +  re + " do");
+        RESULT.valor  += (b.declaraciones + "\n" + b.valor + "\n");
+    } else {
+        String bloque = b.valor.substring(0,b.valor.length()-4);
+        RESULT.valor= id+":="+e.valor+"\n\twhile " + l.valor + " do\n"+ b.declaraciones + "\n" + bloque + "\t\n\t"  + id2+":="+e2.valor +"\nend\n";
+    }
+:};
+
+LID ::= Tident:v1 {:
+    RESULT = new Identificadores();
+    RESULT.valor = v1;
+:}| LID:l1 Tcoma Tident:v1 {:
+    RESULT = new Identificadores();
+    RESULT.valor = l1.valor + ", " + v1;
+:};
+
+LEXP ::= EXP:v1 {:
+    RESULT = new Lexp();
+    RESULT.valor = v1.valor;
+:} | LEXP:l1 Tcoma EXP:v1 {:
+    RESULT = new Lexp();
+    RESULT.valor = l1.valor + ", " + v1.valor;
+:};
+
+EXP ::= EXP:e1 OP:o EXP:e2 {:
+    RESULT = new Expresiones();
+    RESULT.valor = e1.valor + " " + o.valor + " " + e2.valor;
+    RESULT.id = e1.valor;
+    RESULT.aum = e2.valor;
+    RESULT.cmp = o.valor;
+:}| FACTOR:f  {:
+    RESULT = new Expresiones();
+    RESULT.valor = f.valor;
+:};
+
+OP ::= Tmas {:
+    RESULT = new Operadores();
+    RESULT.valor = "+";
+:}| Tmenos {:
+    RESULT = new Operadores();
+    RESULT.valor = "-";
+:}| Tpor {:
+    RESULT = new Operadores();
+    RESULT.valor = "*";
+:}| Tdiv {:
+    RESULT = new Operadores();
+    RESULT.valor = "div";
+:}| Tmod {:
+    RESULT = new Operadores();
+    RESULT.valor = "mod";
+:};
+FACTOR ::= Tident:v Tpara LEXP:v1 Tparc {:
+    RESULT = new Factor();
+    RESULT.valor = v+"(" + v1.valor + ")";
+:}| Tident:v Tpara Tparc {:
+    RESULT = new Factor();
+    RESULT.valor = v;
+:} | Tpara EXP:v Tparc {:
+    RESULT = new Factor();
+    RESULT.valor = "("+v.valor+")";
+:}| Tident:v{:
+    RESULT = new Factor();
+    RESULT.valor = v;
+:} | CTES:v {:
+    RESULT = new Factor();
+    RESULT.valor = v.valor;
+:};
+
+LCOND ::= LCOND:l1 OPL:o LCOND:l2 {:
+    RESULT = new Lcond();
+    RESULT.valor = l1.valor + " " + o.valor +" "+ l2.valor;
+:}| COND:c {:
+    RESULT = new Lcond();
+    RESULT.valor = c.valor;
+:}| Tneg COND:c1 {:
+    RESULT = new Lcond();
+    RESULT.valor = "not" + " "+  c1.valor;
+:};
+
+OPL ::= Tor {:
+    RESULT = new Operadores();
+    RESULT.valor = "or";
+:}| Tand {:
+    RESULT = new Operadores();
+    RESULT.valor = "and";
+:};
+
+COND ::= EXP:e1 OPR:o EXP:e2 {:
+    RESULT = new Condicionales();
+    RESULT.valor = e1.valor + o.valor + e2.valor;
+:};
+
+OPR ::= Teq {:
+    RESULT  = new Operadores();
+    RESULT.valor = "=";
+:} | Tmenor {:
+    RESULT  = new Operadores();
+    RESULT.valor = "<";
+:} | Tmayor {:
+    RESULT  = new Operadores();
+    RESULT.valor = ">";
+:} | Tmayori {:
+    RESULT = new Operadores();
+    RESULT.valor = ">=";
+:} | Tmenori{:
+    RESULT = new Operadores();
+    RESULT.valor = "<=";
+:};

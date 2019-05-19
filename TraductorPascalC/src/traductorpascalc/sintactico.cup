@@ -62,9 +62,7 @@ start with PRG;
 PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
         
         RESULT = b.cab + "void main (void) \n{\n" + b.valor + b.cierre;
-        System.out.println("RESULT:\n"+RESULT);
-
-        System.out.println("funcionaAA");
+        System.out.println(""+RESULT);
 :} 
         | unit_ identifier puntoComa DCLLIST punto ;
 
@@ -179,7 +177,7 @@ SENT ::= ASIG:a puntoComa{:
         RESULT.valor = a.valor + "; \n";
 :}  | PROC_CALL:pc puntoComa{:
         RESULT = new Sent();
-        RESULT.valor = pc.valor + ";" ;
+        RESULT.valor = pc.valor + "; \n" ;
 :} | if_ EXPCOND then_ BLQ else_ BLQ
         | while_ EXPCOND do_ BLQ
         | repeat_ BLQ until_ EXPCOND puntoComa

@@ -1,0 +1,46 @@
+int main(void)
+{
+int a;
+a = 78;
+int b;
+b = +234;
+int c;
+c = 056;
+int d;
+d = 0;
+float e;
+e = 043.65;
+float f;
+f = 0x87.65A;
+int g;
+g = 0x-34;
+int g;
+g = +123;
+int i;
+i = -69;
+int j;
+j = 45;
+int k;
+k = 0+123;
+int l;
+l = 0-64;
+int m;
+m = 0x+123;
+int n;
+n = 0x-A6F9;
+int o;
+o = 0xFFFF;
+float p;
+p = +123.456;
+float q;
+q = 045.16;
+float r;
+r = 00.35;
+float s;
+s = 0x+123.0;
+float t;
+t = 0x-E.A6F9;
+float u;
+u = 0x0.FFFF;
+return 0;
+}
