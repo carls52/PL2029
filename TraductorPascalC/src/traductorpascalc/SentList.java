@@ -10,6 +10,6 @@ package traductorpascalc;
  * @author Carlos Gil Sabrido
  */
 public class SentList {
-    public String valor = "";
+    String valor = "";
     public SentList(){}
 }

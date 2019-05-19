@@ -14,7 +14,7 @@ parser code{:
 non terminal PRG;
 non terminal Blq BLQ;
 non terminal DcList DCLLIST;
-non terminal SENTLIST;
+non terminal SentList SENTLIST;
 
 non terminal Def DCL;
 non terminal DefCte DEFCTE;
@@ -86,7 +86,7 @@ SENTLIST ::= SENT:s{:
         RESULT.valor = s.valor;
 :}  | SENTLIST:sList SENT:s {:
         RESULT = new SentList();
-        RESULT = sList.valor + s.valor;
+        RESULT.valor = sList.valor + s.valor;
 :};
 
 DCL ::= DEFCTE:dCte {:
