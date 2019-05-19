@@ -1,44 +1,49 @@
-package traductorPascalC;
-import java_cup.runtime.Symbol;
+package traductorpascalc;
+import java_cup.runtime.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 action code
 {:	
 :}
-parser code
-{:	
+parser code{:
+	public void syntax_error(String string, Symbol s){
+		System.out.println(string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
+	}
+	public void unrecovered_syntax_error(String string, Symbol s){ 
+                System.out.println("ERROR FATAL: " + string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
+        }	
 :}
 
 non terminal PRG;
-non terminal BLQ;
-non terminal DCLLIST;
-non terminal SENTLIST;
+non terminal Blq BLQ;
+non terminal DcList DCLLIST;
+non terminal SentList SENTLIST;
 
-non terminal DCL;
-non terminal DEFCTE;
-non terminal CTELIST;
-non terminal SIMPVALUE;
-non terminal DEFVAR;
-non terminal DEFVARLIST;
-non terminal VARLIST;
-non terminal DEFPROC;
-non terminal DEFFUN;
-non terminal FORMAL_PARAMLIST;
-non terminal FORMAL_PARAM;
-non terminal TBAS;
+non terminal Def DCL;
+non terminal DefCte DEFCTE;
+non terminal CteList CTELIST;
+non terminal Constantes SIMPVALUE;
+non terminal DefVar DEFVAR;
+non terminal DefVarList DEFVARLIST;
+non terminal VarList VARLIST;
+non terminal DefProc DEFPROC;
+non terminal DefFun DEFFUN;
+non terminal FormalParamList FORMAL_PARAMLIST;
+non terminal FormalParam FORMAL_PARAM;
+non terminal Tipo TBAS;
 
-non terminal SENT;
+non terminal Sent SENT;
 non terminal INC;
-non terminal ASIG;
-non terminal ID;
-non terminal EXP;
-non terminal OP;
-non terminal OPARIT;
-non terminal FACTOR;
-non terminal SUBPPARAMLIST;
-non terminal EXPLIST;
-non terminal PROC_CALL;
+non terminal Asig ASIG;
+non terminal Id ID;
+non terminal Exp EXP;
+non terminal Op OP;
+non terminal Operadores OPARIT;
+non terminal Factor FACTOR;
+non terminal SupParamList SUBPPARAMLIST;
+non terminal ExpList EXPLIST;
+non terminal ProcCall PROC_CALL;
 
 non terminal EXPCOND;
 non terminal OPLOG;
@@ -48,33 +53,30 @@ non terminal OPCOMP;
 
 terminal String program_, identifier,numeric_integer_const,  numeric_real_const, 
     string_const, puntoComa, punto, begin_, end_, igual, procedure_, 
-    function_, dosPuntos, abrirPar, cerrarPar, lambda, mas, menos, 
+    function_, dosPuntos, abrirPar, cerrarPar, lambda, mas_, menos, 
     mul, div_, mod_, coma, puntosIgual, and_, or_, unit_, const_, var_, int_, 
     real_, if_, then_, else_, while_, do_, repeat_, until_, for_, downto_, to_, 
     not_, menor, mayor, menorIgual, mayorIgual;
 
-precedence left mas, menos;
+precedence left mas_, menos;
 precedence left mul, div_, and_, or_, mod_;
 
 start with PRG;
 
-PRG ::= program_ identifier:id puntoComa {:b.main=true:}BLQ:b punto {:
-        String res = b.cab + b.valor + "\n ."
-        System.out.println(b.cab+);
+PRG ::= program_ identifier:id puntoComa {:System.out.println("funciona antes de BLQ");:} BLQ:b punto {:
+        
+        //String res = b.cab + b.valor + "\n .";
+       // RESULT = b.cab + "int main (void) {" + b.valor + b.cierre;
+       // System.out.println(RESULT);
+        System.out.println("funcionaAA");
 :} 
         | unit_ identifier puntoComa DCLLIST punto ;
 BLQ ::= DCLLIST:dList begin_ SENTLIST:sList end_ {:
         RESULT = new Blq();
-        if(RESULT.main)
-        {
-            RESULT.cab = dList.valor
-            RESULT.valor = RESULT.cab + "\n int main (void) \n { \n" + sList.valor + "}";
-        }
-        else
-        {       
-            RESULT.cab = dList.valor;
-            RESULT.valor = "{\n"+ sList.valor + "}\n";
-        }
+        
+       // RESULT.cab = dList.valor;
+       // RESULT.cierre = "}";
+       // RESULT.valor = sList.valor;
 :};
 DCLLIST ::= {:
         RESULT = new DcList();
@@ -88,7 +90,7 @@ SENTLIST ::= SENT:s{:
         RESULT.valor = s.valor;
 :}  | SENTLIST:sList SENT:s {:
         RESULT = new SentList();
-        RESULT = sList.valor + s.valor
+        RESULT = sList.valor + s.valor;
 :};
 
 DCL ::= DEFCTE:dCte {:
@@ -158,7 +160,7 @@ FORMAL_PARAMLIST ::= {:
         RESULT.valor = "( void )";
 :}  | abrirPar FORMAL_PARAM:fp cerrarPar {:
         RESULT = new FormalParamList();
-        RESULT.valor = "("+fp.valor+")"
+        RESULT.valor = "("+fp.valor+")";
 :};
 FORMAL_PARAM ::= VARLIST:vList dosPuntos TBAS:t {:
         RESULT = new FormalParam();
@@ -180,7 +182,7 @@ SENT ::= ASIG:a puntoComa{:
         RESULT.valor = a.valor + ": \n";
 :}  | PROC_CALL:pc puntoComa{:
         RESULT = new Sent();
-        RESULT.valor = pc.valor + ";" 
+        RESULT.valor = pc.valor + ";" ;
 :} | if_ EXPCOND then_ BLQ else_ BLQ
         | while_ EXPCOND do_ BLQ
         | repeat_ BLQ until_ EXPCOND puntoComa
@@ -191,8 +193,8 @@ ASIG ::= ID:id puntosIgual:p EXP:e{:
         RESULT = id.valor + " = " + e.valor;
 :} ;
 ID ::= identifier:id{:
-        RESULT=new Id()
-        RESULT.valor="id"
+        RESULT=new Id();
+        RESULT.valor="id";
 :} ;
 EXP ::= EXP:e1 OP:o EXP:e2 {:
         RESULT = new Exp();
@@ -202,9 +204,10 @@ EXP ::= EXP:e1 OP:o EXP:e2 {:
         RESULT.valor = f.valor; 
 :};
 OP ::= OPARIT:op{:
-        RESULT = op.valor:
-};
-OPARIT ::= mas{:
+        RESULT = new Op();
+        RESULT.valor = op.valor;
+:};
+OPARIT ::= mas_{:
         RESULT = new Operadores();
         RESULT.valor = "+";
 :} | menos{:
@@ -232,12 +235,18 @@ FACTOR ::= SIMPVALUE:sv {:
 :};
 SUBPPARAMLIST ::= {:
         RESULT = new SubParamList();
-        RESULT.valor = "()"
+        RESULT.valor = "()";
 :}  | abrirPar EXPLIST:eList cerrarPar {:
         RESULT = new SubParamList();
-        RESULT.valor = "(" + eList.valor + ")"
+        RESULT.valor = "(" + eList.valor + ")";
 :};
-EXPLIST ::= EXP | EXP coma EXPLIST ;
+EXPLIST ::= EXP:e{:
+        RESULT = new ExpList();
+        RESULT.valor = e.valor;
+:}  | EXP:e coma EXPLIST:eList {:
+        RESULT = new ExpList();
+        RESULT.valor = e.valor + ", " + eList.valor;
+:};
 PROC_CALL ::= identifier:id SUBPPARAMLIST:subList {:
         RESULT = new ProcCall();
         RESULT.valor = id + subList.valor;

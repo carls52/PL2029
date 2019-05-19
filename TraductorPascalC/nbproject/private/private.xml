@@ -5,7 +5,7 @@
         <group>
             <file>file:/D:/Users/Carlos/Documents/GitHub/PL2029/TraductorPascalC/src/traductorpascalc/sintactico.cup</file>
             <file>file:/D:/Users/Carlos/Documents/GitHub/PL2029/TraductorPascalC/src/traductorpascalc/lexico.flex</file>
-            <file>file:/D:/Users/Carlos/Documents/GitHub/PL2029/TraductorPascalC/src/traductorpascalc/TraductorPascalC.java</file>
+            <file>file:/D:/Users/Carlos/Documents/GitHub/PL2029/TraductorPascalC/src/traductorpascalc/AnalizadorLexico.java</file>
             <file>file:/D:/Users/Carlos/Documents/GitHub/PL2029/TraductorPascalC/src/traductorpascalc/Analizador.java</file>
         </group>
     </open-files>

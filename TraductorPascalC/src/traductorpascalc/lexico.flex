@@ -28,7 +28,7 @@ import java_cup.runtime.Symbol;
 ">"		{return new Symbol(sym.mayor);}
 ">="      	{return new Symbol(sym.mayorIgual);}
 "<="      	{return new Symbol(sym.menorIgual);}
-"+"		{return new Symbol(sym.mas);}
+"+"		{return new Symbol(sym.mas_);}
 "-"		{return new Symbol(sym.menos);}
 "*"		{return new Symbol(sym.mul);}
 "div"		{return new Symbol(sym.div_);}
@@ -64,29 +64,29 @@ import java_cup.runtime.Symbol;
 /*---------------- identificadores ---------------*/
 
 [a-no-zA-NO-Z][a-zA-Z0-9_]* {
-	return new Symbol (sym.identifier);
+	return new Symbol (sym.identifier,yyline, yycolumn, yytext());
 }
 
 /*----------------  numeros ---------------*/
 
 [+-]?[0-9]+ {
-	return new Symbol (sym.numeric_integer_const,yytext());
+	return new Symbol (sym.numeric_integer_const,yyline, yycolumn,yytext());
 }
 		
 [+-]?[0-9]+"."[0-9]+    {
-	return new Symbol (sym.numeric_real_const, yytext());
+	return new Symbol (sym.numeric_real_const,yyline, yycolumn, yytext());
 }
 
 [+-]?[0-9]+[eE][+-]?[0-9]+  {
-	return new Symbol (sym.numeric_real_const, yytext());
+	return new Symbol (sym.numeric_real_const,yyline, yycolumn, yytext());
 }
 
 [+-]?[0-9]+"."[0-9]]+[eE][+-]?[0-9]+    {
-	return new Symbol (sym.numeric_real_const, yytext());
+	return new Symbol (sym.numeric_real_const,yyline, yycolumn, yytext());
 }
 
 '([^']|"''")+' {
-	return new Symbol (sym.string_const, yytext());
+	return new Symbol (sym.string_const,yyline, yycolumn, yytext());
 }
 
 /*----------------  comentarios ---------------*/
@@ -96,9 +96,7 @@ import java_cup.runtime.Symbol;
 
 /*----------------  espacios en blanco ---------------*/
 
-[/n/t/r] {}
+[\r\n\t] {System.out.print("");}
+[ ] {}
 
-.   {
- System.out.println("Caracter erroneo: "+yytext() + " " + yyline + " " + yycolumn); 
-
-}
+. { System.out.println("Error léxico. Caracter erroneo: "+yytext() + ", linea " + yyline + " columna " + yycolumn); }

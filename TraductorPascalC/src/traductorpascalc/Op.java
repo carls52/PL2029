@@ -10,5 +10,6 @@ package traductorpascalc;
  * @author Carlos Gil Sabrido
  */
 public class Op {
-    
+    String valor = "";
+    public Op(){}
 }

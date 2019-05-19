@@ -14,7 +14,7 @@ public class Analizador{
             for (int i = 0; i < argv.length; i++) {
                 AnalizadorLexico lexico = null;
                 try {
-                    String salida = argv[i].substring(0,argv[i].length()-3) +".c";
+                    String salida = argv[i].substring(0,argv[i].length()-4) +".c";
                     PrintStream o = new PrintStream (new File(salida));
                     System.setOut(o);
                     lexico = new AnalizadorLexico( new java.io.FileReader(argv[i]));

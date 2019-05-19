@@ -5,14 +5,13 @@
  */
 package traductorpascalc;
 
-
+/**
+ *
+ * @author Carlos Gil Sabrido
+ */
 public class Blq {
     String valor = "";
     String cab = "";
-    Boolean main = false;
-    public Blq(){}
-    public Blq(Boolean m) 
-    {
-        this.main = m;
-    }
+    String cierre = "";
+    public Blq() {}
 }
