@@ -1,11 +1,7 @@
 package traductorpascalc;
 import java_cup.runtime.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.util.Map.Entry;
 
-action code
-{:	
-:}
 parser code{:
 	public void syntax_error(String string, Symbol s){
 		System.out.println(string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
@@ -18,7 +14,7 @@ parser code{:
 non terminal PRG;
 non terminal Blq BLQ;
 non terminal DcList DCLLIST;
-non terminal SentList SENTLIST;
+non terminal SENTLIST;
 
 non terminal Def DCL;
 non terminal DefCte DEFCTE;
@@ -53,7 +49,7 @@ non terminal OPCOMP;
 
 terminal String program_, identifier,numeric_integer_const,  numeric_real_const, 
     string_const, puntoComa, punto, begin_, end_, igual, procedure_, 
-    function_, dosPuntos, abrirPar, cerrarPar, lambda, mas_, menos, 
+    function_, dosPuntos, abrirPar, cerrarPar, mas_, menos, 
     mul, div_, mod_, coma, puntosIgual, and_, or_, unit_, const_, var_, int_, 
     real_, if_, then_, else_, while_, do_, repeat_, until_, for_, downto_, to_, 
     not_, menor, mayor, menorIgual, mayorIgual;
