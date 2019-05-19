@@ -110,7 +110,7 @@ CTELIST ::= identifier:id igual SIMPVALUE:sv puntoComa {:
         RESULT = new CteList();
         RESULT.valor = "#define " + id + " " + sv +"; \n";
 :}  | CTELIST:cList identifier:id igual SIMPVALUE:sv puntoComa {:
-        RESULT = new DefCte();
+        RESULT = new CteList();
         RESULT.valor = cList.valor + "#define " + id + " " + sv + "; \n"; 
 :};
 SIMPVALUE ::= numeric_integer_const:nic {:
@@ -124,7 +124,7 @@ SIMPVALUE ::= numeric_integer_const:nic {:
         RESULT.valor = sc;
 :};
 DEFVAR ::= var_:var DEFVARLIST:dvList puntoComa {:
-        RESULT = new Def();
+        RESULT = new DefVar();
         RESULT.valor = dvList.cab + " " + var + dvList.valor + ";\n" ;
 :};
 DEFVARLIST ::= VARLIST:vList dosPuntos TBAS:t {:
@@ -141,7 +141,7 @@ VARLIST ::= identifier:id {:
         RESULT.valor = id;
 :}  | identifier:id coma VARLIST:vList {:
         RESULT = new VarList();
-        RESULT = id + ", " + vList.valor;
+        RESULT.valor = id + ", " + vList.valor;
 :};
 DEFPROC ::= procedure_ identifier:id FORMAL_PARAMLIST:fpList puntoComa BLQ:b puntoComa {:
         RESULT = new DefProc();
@@ -149,7 +149,7 @@ DEFPROC ::= procedure_ identifier:id FORMAL_PARAMLIST:fpList puntoComa BLQ:b pun
 :};
 DEFFUN ::= function_ identifier:id FORMAL_PARAMLIST:fp dosPuntos TBAS:t puntoComa BLQ:b puntoComa {:
         RESULT = new DefFun();
-        RESULT = b.cab + "\n" + t.valor + id + fp.valor + b.valor;
+        RESULT.valor = b.cab + "\n" + t.valor + id + fp.valor + b.valor;
 :};
 FORMAL_PARAMLIST ::= {:
         RESULT = new FormalParamList();
@@ -186,7 +186,7 @@ SENT ::= ASIG:a puntoComa{:
 INC ::= to_ | downto_ ;
 ASIG ::= ID:id puntosIgual:p EXP:e{:
         RESULT = new Asig();
-        RESULT = id.valor + " = " + e.valor;
+        RESULT.valor = id.valor + " = " + e.valor;
 :} ;
 ID ::= identifier:id{:
         RESULT=new Id();

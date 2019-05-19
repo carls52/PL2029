@@ -5,7 +5,11 @@
  */
 package traductorpascalc;
 
-public class SubParamList {
-    String valor;
-    public SubParamList() {}
+/**
+ *
+ * @author Carlos Gil Sabrido
+ */
+public class Factor {
+    String valor = "";
+            public Factor(){}
 }
