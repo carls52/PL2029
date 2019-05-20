@@ -1041,6 +1041,18 @@ fun.add(id);funAct=id;
           case 39: // SENT ::= if_ EXPCOND then_ BLQ else_ BLQ 
             {
               Sent RESULT =null;
+		int ecleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int ecright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		Object ec = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int b1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int b1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Blq b1 = (Blq)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int b2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int b2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Blq b2 = (Blq)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT = new Sent();
+        RESULT.valor = "if(" + ec.valor + ")\n" + b1.apertura + b1.cab + b1.valor + b1.cierre + "else\n" + b2.apertura + b2.cab + b2.valor + b2.cierre;  
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1387,6 +1399,18 @@ fun.add(id);funAct=id;
           case 63: // EXPCOND ::= EXPCOND OPLOG EXPCOND 
             {
               Object RESULT =null;
+		int ec1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int ec1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Object ec1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int oplogleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int oplogright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Object oplog = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int ec2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int ec2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object ec2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new ExpCond();
+        RESULT.valor = ec1.valor +" "+ oplog.valor +" "+ ec2.valor;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("EXPCOND",27, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1396,6 +1420,12 @@ fun.add(id);funAct=id;
           case 64: // EXPCOND ::= FACTORCOND 
             {
               Object RESULT =null;
+		int fcleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int fcright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object fc = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new ExpCond();
+        RESULT.valor = fc.valor; 
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("EXPCOND",27, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1405,6 +1435,9 @@ fun.add(id);funAct=id;
           case 65: // OPLOG ::= or_ 
             {
               Object RESULT =null;
+		
+        RESULT=new OpLog();
+        RESULT.valor = "||";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPLOG",28, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1414,6 +1447,9 @@ fun.add(id);funAct=id;
           case 66: // OPLOG ::= and_ 
             {
               Object RESULT =null;
+		
+        RESULT=new OpLog();
+        RESULT.valor = "&&";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPLOG",28, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1423,6 +1459,18 @@ fun.add(id);funAct=id;
           case 67: // FACTORCOND ::= EXP OPCOMP EXP 
             {
               Object RESULT =null;
+		int e1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int e1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Exp e1 = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int ocleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int ocright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Object oc = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		int e2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int e2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Exp e2 = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new FactorCond();
+        RESULT.valor = e1.valor +" "+ oc.valor+" "+e2.valor; 
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("FACTORCOND",29, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1432,6 +1480,12 @@ fun.add(id);funAct=id;
           case 68: // FACTORCOND ::= abrirPar EXP cerrarPar 
             {
               Object RESULT =null;
+		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		Exp e = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		
+        RESULT=new FactorCond();
+        RESULT.valor = "("+e.valor+")";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("FACTORCOND",29, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1441,6 +1495,12 @@ fun.add(id);funAct=id;
           case 69: // FACTORCOND ::= not_ FACTORCOND 
             {
               Object RESULT =null;
+		int fleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int fright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Object f = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new FactorCond();
+        RESULT.valor = "!"+f.valor;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("FACTORCOND",29, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1450,6 +1510,12 @@ fun.add(id);funAct=id;
           case 70: // OPCOMP ::= menor 
             {
               Object RESULT =null;
+		int mleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int mright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String m = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new OpComp();
+        RESULT.valor = "<";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPCOMP",30, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1459,6 +1525,12 @@ fun.add(id);funAct=id;
           case 71: // OPCOMP ::= mayor 
             {
               Object RESULT =null;
+		int maleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int maright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String ma = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new OpComp();
+        RESULT.valor = ">";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPCOMP",30, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1468,6 +1540,12 @@ fun.add(id);funAct=id;
           case 72: // OPCOMP ::= menorIgual 
             {
               Object RESULT =null;
+		int mileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int miright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String mi = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new OpComp();
+        RESULT.valor = "<=";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPCOMP",30, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1477,6 +1555,12 @@ fun.add(id);funAct=id;
           case 73: // OPCOMP ::= mayorIgual 
             {
               Object RESULT =null;
+		int maileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int mairight = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String mai = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new OpComp();
+        RESULT.valor = ">=";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPCOMP",30, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1486,6 +1570,12 @@ fun.add(id);funAct=id;
           case 74: // OPCOMP ::= igual 
             {
               Object RESULT =null;
+		int ileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String i = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        RESULT=new OpComp();
+        RESULT.valor = "=";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("OPCOMP",30, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

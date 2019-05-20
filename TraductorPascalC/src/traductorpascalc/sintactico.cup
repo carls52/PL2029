@@ -225,8 +225,10 @@ SENT ::= ASIG:a puntoComa{:
         {
             RESULT.valor = "\t" + RESULT.valor;
         }
-:} | if_ EXPCOND then_ BLQ else_ BLQ
-        | while_ EXPCOND do_ BLQ
+:}  | if_ EXPCOND:ec then_ BLQ:b1 else_ BLQ:b2 {:
+        RESULT = new Sent();
+        RESULT.valor = "if(" + ec.valor + ")\n" + b1.apertura + b1.cab + b1.valor + b1.cierre + "else\n" + b2.apertura + b2.cab + b2.valor + b2.cierre;  
+:}  | while_ EXPCOND do_ BLQ
         | repeat_ BLQ until_ EXPCOND puntoComa
         | for_ identifier puntosIgual EXP INC EXP do_ BLQ ; 
 INC ::= to_ | downto_ ;
@@ -313,7 +315,43 @@ PROC_CALL ::= identifier:id SUBPPARAMLIST:subList {:
             RESULT.valor = id + subList.valor;
 :} ; 
 
-EXPCOND ::= EXPCOND OPLOG EXPCOND | FACTORCOND ;
-OPLOG ::= or_ | and_ ;
-FACTORCOND ::= EXP OPCOMP EXP | abrirPar EXP cerrarPar | not_ FACTORCOND ;
-OPCOMP ::= menor | mayor | menorIgual | mayorIgual | igual ;
+EXPCOND ::= EXPCOND:ec1 OPLOG:oplog EXPCOND:ec2 {:
+        RESULT=new ExpCond();
+        RESULT.valor = ec1.valor +" "+ oplog.valor +" "+ ec2.valor;
+:}  | FACTORCOND:fc{:
+        RESULT=new ExpCond();
+        RESULT.valor = fc.valor; 
+:} ;
+OPLOG ::= or_ {:
+        RESULT=new OpLog();
+        RESULT.valor = "||";
+:}  | and_ {:
+        RESULT=new OpLog();
+        RESULT.valor = "&&";
+:};
+FACTORCOND ::= EXP:e1 OPCOMP:oc EXP:e2 {:
+        RESULT=new FactorCond();
+        RESULT.valor = e1.valor +" "+ oc.valor+" "+e2.valor; 
+:}  | abrirPar EXP:e cerrarPar {:
+        RESULT=new FactorCond();
+        RESULT.valor = "("+e.valor+")";
+:}  | not_ FACTORCOND:f {:
+        RESULT=new FactorCond();
+        RESULT.valor = "!"+f.valor;
+:};
+OPCOMP ::= menor:m {:
+        RESULT=new OpComp();
+        RESULT.valor = "<";
+:}  | mayor:ma {:
+        RESULT=new OpComp();
+        RESULT.valor = ">";
+:}  | menorIgual:mi {:
+        RESULT=new OpComp();
+        RESULT.valor = "<=";
+:}  | mayorIgual:mai {:
+        RESULT=new OpComp();
+        RESULT.valor = ">=";
+:}  | igual:i {:
+        RESULT=new OpComp();
+        RESULT.valor = "=";
+:};
