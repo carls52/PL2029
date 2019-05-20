@@ -1,7 +1,9 @@
 package traductorpascalc;
 import java_cup.runtime.*;
 import java.util.Map.Entry;
-
+import java.util.ArrayList;
+action code {:
+:}
 parser code{:
 	public void syntax_error(String string, Symbol s){
 		System.out.println(string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
@@ -9,6 +11,10 @@ parser code{:
 	public void unrecovered_syntax_error(String string, Symbol s){ 
                 System.out.println("ERROR FATAL: " + string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
         }	
+        ArrayList<String> var = new ArrayList<String>();
+        ArrayList<String> fun = new ArrayList<String>();
+        int nivel = 0;
+        
 :}
 
 non terminal PRG;
@@ -66,13 +72,13 @@ PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
 :} 
         | unit_ identifier puntoComa DCLLIST punto ;
 
-BLQ ::= DCLLIST:dList begin_ SENTLIST:sList end_ {:
+BLQ ::= {:nivel++;:}DCLLIST:dList begin_ SENTLIST:sList{:nivel--;:} end_ {:
         RESULT = new Blq();
-        
-        RESULT.apertura = "\n{ \n";
         RESULT.cab = dList.valor;
+        RESULT.apertura = "\n{ \n";           
         RESULT.cierre = "} \n";
         RESULT.valor = sList.valor;
+        
 :};
 DCLLIST ::= {:
         RESULT = new DcList();
@@ -126,6 +132,10 @@ SIMPVALUE ::= numeric_integer_const:nic {:
 DEFVAR ::= var_:var DEFVARLIST:dvList puntoComa {:
         RESULT = new DefVar();
         RESULT.valor = dvList.cab + " " + dvList.valor + ";\n" ;
+        for(int k = 0;k<nivel-1;k++)
+        {
+            RESULT.valor = "\t" + RESULT.valor;
+        }
 :};
 DEFVARLIST ::= VARLIST:vList dosPuntos TBAS:t {:
         RESULT = new DefVarList();
@@ -134,7 +144,12 @@ DEFVARLIST ::= VARLIST:vList dosPuntos TBAS:t {:
         
 :}  | DEFVARLIST:dvList puntoComa VARLIST:vList dosPuntos TBAS:t {:
         RESULT = new DefVarList();
-        RESULT.valor = dvList.valor + ";\n" + t.valor+ " " + vList.valor ;
+        RESULT.valor = dvList.valor + ";\n";
+        for(int k = 0;k<nivel-1;k++)
+        {
+            RESULT.valor = RESULT.valor + "\t" ;
+        }
+        RESULT.valor = RESULT.valor + t.valor+ " " + vList.valor;
         RESULT.cab = dvList.cab;
 :};
 VARLIST ::= identifier:id {:
@@ -142,6 +157,7 @@ VARLIST ::= identifier:id {:
         RESULT.valor = id;
         RESULT.max = 1;
         RESULT.lista[0] = id;
+        var.add(id);
  
 :}  | identifier:id coma VARLIST:vList {:
         RESULT = new VarList();
@@ -152,14 +168,17 @@ VARLIST ::= identifier:id {:
         }
         RESULT.lista[vList.max]= id;
         RESULT.max = vList.max +1;
+        var.add(id);
 :};
 DEFPROC ::= procedure_ identifier:id FORMAL_PARAMLIST:fpList puntoComa BLQ:b puntoComa {:
         RESULT = new DefProc();
-        RESULT.valor = b.cab + "\n void " + id + fpList.valor + "\n" + b.valor;
+        RESULT.valor =  "void " + id + fpList.valor + b.apertura +b.cab + b.valor  + b.cierre;
+        fun.add(id);
 :};
-DEFFUN ::= function_ identifier:id FORMAL_PARAMLIST:fp dosPuntos TBAS:t puntoComa BLQ:b puntoComa {:
+DEFFUN ::= function_ identifier:id{:fun.add(id);:} FORMAL_PARAMLIST:fp dosPuntos TBAS:t puntoComa BLQ:b puntoComa {:
         RESULT = new DefFun();
         RESULT.valor =  t.valor +" "+ id +" "+ fp.valor  + b.apertura + b.cab + b.valor + b.cierre;
+        fun.add(id);
 :};
 FORMAL_PARAMLIST ::= {:
         RESULT = new FormalParamList();
@@ -191,9 +210,18 @@ TBAS ::= int_ {:
 SENT ::= ASIG:a puntoComa{:
         RESULT = new Sent();
         RESULT.valor = a.valor + "; \n";
+        for(int m=0;m<nivel-1;m++)
+        {
+            RESULT.valor = "\t" + RESULT.valor + "HOLA";
+            System.out.println(nivel);
+        }
 :}  | PROC_CALL:pc puntoComa{:
         RESULT = new Sent();
         RESULT.valor = pc.valor + "; \n" ;
+        for(int j=0;j<nivel-1;j++)
+        {
+            RESULT.valor = "\t" + RESULT.valor;
+        }
 :} | if_ EXPCOND then_ BLQ else_ BLQ
         | while_ EXPCOND do_ BLQ
         | repeat_ BLQ until_ EXPCOND puntoComa
@@ -240,13 +268,21 @@ FACTOR ::= SIMPVALUE:sv {:
 :}  | abrirPar EXP:e cerrarPar {:
         RESULT=new Factor();
         RESULT.valor = "(" + e.valor + ")"; 
-:}  | identifier:id SUBPPARAMLIST:sublist {:
+:}  | identifier:id SUBPPARAMLIST:subList {:
         RESULT=new Factor();
-        RESULT.valor = id + sublist.valor; 
+        if (subList.valor == "")
+        {
+            if(fun.contains(id))
+                RESULT.valor = id + "()";
+            else
+                RESULT.valor = id;
+        }
+        else
+            RESULT.valor = id + subList.valor;
 :};
 SUBPPARAMLIST ::= {:
         RESULT = new SubPparamList();
-        RESULT.valor = " ";
+        RESULT.valor = "";
 :}  | abrirPar EXPLIST:eList cerrarPar {:
         RESULT = new SubPparamList();
         RESULT.valor = "(" + eList.valor + ")";
@@ -260,8 +296,13 @@ EXPLIST ::= EXP:e{:
 :};
 PROC_CALL ::= identifier:id SUBPPARAMLIST:subList {:
         RESULT = new ProcCall();
-        if (subList.valor == " ")
-            RESULT.valor = id + "()";
+        if (subList.valor == "")
+        {
+            if(fun.contains(id))
+                RESULT.valor = id + "()";
+            else
+                RESULT.valor = id;
+        }
         else
             RESULT.valor = id + subList.valor;
 :} ; 
