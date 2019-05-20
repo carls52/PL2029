@@ -78,12 +78,18 @@ precedence left mul, div_, and_, or_, mod_;
 
 start with PRG;
 
-PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
+PRG ::= program_ identifier puntoComa BLQ error {:
+        syntax_error("Error: se esperaba '.'\n",cur_token);
+:}  | program_ error puntoComa BLQ punto {:
+        syntax_error("Error: identificador de programa erróneo\n",cur_token);
+:}  | error:e identifier puntoComa BLQ punto {:
+        syntax_error("Error: se esperaba 'program'\n",cur_token);
+:}  | program_ identifier:id puntoComa BLQ:b punto {:
         
         RESULT = b.cab + "void main (void) \n{\n" + b.valor + b.cierre;
         System.out.println(""+RESULT);
 :} 
-        | unit_ identifier:id puntoComa DCLLIST:dList punto {:
+        | unit_ identifier:id puntoComa {:nivelCab++;:}DCLLIST:dList{:nivelCab--;:} punto {:
         
         RESULT = "//Libreria: "+id+"\n"+ dList.valor;
         System.out.println(""+RESULT);
@@ -96,7 +102,7 @@ BLQ ::= {:nivelCab++;:}DCLLIST:dList{:nivelCab--;:} begin_ {:nivel++;:}SENTLIST:
         RESULT.cierre = "} \n";
         RESULT.valor = sList.valor;
         
-:};
+:};  
 DCLLIST ::= {:
         RESULT = new DcList();
         RESULT.valor = "";
@@ -190,13 +196,13 @@ VARLIST ::= identifier:id {:
 DEFPROC ::= procedure_ identifier:id{:funAct="";:} FORMAL_PARAMLIST:fpList puntoComa BLQ:b puntoComa {:
         RESULT = new DefProc();
         funAct="";
-        RESULT.valor =  "void " + id + fpList.valor + b.apertura +b.cab + b.valor  + b.cierre;
+        RESULT.valor =  "void " + id + fpList.valor +"\n"+ b.apertura +b.cab + b.valor  + b.cierre;
         fun.add(id);
 :};
 DEFFUN ::= function_ identifier:id{:fun.add(id);funAct=id;:} FORMAL_PARAMLIST:fp dosPuntos TBAS:t puntoComa BLQ:b puntoComa {:
         RESULT = new DefFun();
         funAct = "";
-        RESULT.valor =  t.valor +" "+ id +" "+ fp.valor  + b.apertura + b.cab + b.valor + b.cierre;
+        RESULT.valor =  t.valor +" "+ id +" "+ fp.valor  +"\n"+ b.apertura + b.cab + b.valor + b.cierre;
         fun.add(id);
 :};
 FORMAL_PARAMLIST ::= {:
