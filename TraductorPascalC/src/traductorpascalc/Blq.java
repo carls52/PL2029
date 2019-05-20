@@ -13,5 +13,6 @@ public class Blq {
     String valor = "";
     String cab = "";
     String cierre = "";
+    String apertura="";
     public Blq() {}
 }

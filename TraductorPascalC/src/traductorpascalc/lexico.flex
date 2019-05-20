@@ -33,7 +33,7 @@ import java_cup.runtime.Symbol;
 "*"		{return new Symbol(sym.mul);}
 "div"		{return new Symbol(sym.div_);}
 "mod"		{return new Symbol(sym.mod_);}
-"VAR"           {return new Symbol (sym.var_);}
+"var"           {return new Symbol (sym.var_);}
 "procedure"	{return new Symbol(sym.procedure_);}
 "function"	{return new Symbol(sym.function_);}
 
@@ -51,8 +51,8 @@ import java_cup.runtime.Symbol;
 "for"     	{return new Symbol(sym.for_);}
 "to"     	{return new Symbol(sym.to_);}
 "downto" 	{return new Symbol(sym.downto_);}
-"BEGIN" 	{return new Symbol(sym.begin_);}
-"END"           {return new Symbol(sym.end_);}
+"begin" 	{return new Symbol(sym.begin_);}
+"end"           {return new Symbol(sym.end_);}
 "const"         {return new Symbol(sym.const_);}
 
 "or"      	{return new Symbol(sym.or_);}

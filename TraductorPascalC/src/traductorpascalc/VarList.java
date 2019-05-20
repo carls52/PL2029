@@ -8,8 +8,12 @@ package traductorpascalc;
 public class VarList {
     String valor = "";
     String tipo = "";
+    String[] lista;
+    int max=0;
     Boolean funcion = false;
-    public VarList(){}
+    public VarList(){
+        lista = new String[100];
+    }
     public VarList(Boolean f)
     {
         this.funcion = f;

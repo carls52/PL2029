@@ -69,8 +69,9 @@ PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
 BLQ ::= DCLLIST:dList begin_ SENTLIST:sList end_ {:
         RESULT = new Blq();
         
+        RESULT.apertura = "\n{ \n";
         RESULT.cab = dList.valor;
-        RESULT.cierre = "}";
+        RESULT.cierre = "} \n";
         RESULT.valor = sList.valor;
 :};
 DCLLIST ::= {:
@@ -107,10 +108,10 @@ DEFCTE ::= const_ CTELIST:cList {:
 :};
 CTELIST ::= identifier:id igual SIMPVALUE:sv puntoComa {:
         RESULT = new CteList();
-        RESULT.valor = "#define " + id + " " + sv +"; \n";
+        RESULT.valor = "#define " + id + " " + sv.valor +"\n";
 :}  | CTELIST:cList identifier:id igual SIMPVALUE:sv puntoComa {:
         RESULT = new CteList();
-        RESULT.valor = cList.valor + "#define " + id + " " + sv + "; \n"; 
+        RESULT.valor = cList.valor + "#define " + id + " " + sv.valor + "\n"; 
 :};
 SIMPVALUE ::= numeric_integer_const:nic {:
         RESULT = new Constantes();
@@ -124,12 +125,13 @@ SIMPVALUE ::= numeric_integer_const:nic {:
 :};
 DEFVAR ::= var_:var DEFVARLIST:dvList puntoComa {:
         RESULT = new DefVar();
-        RESULT.valor = dvList.cab + " " + var + dvList.valor + ";\n" ;
+        RESULT.valor = dvList.cab + " " + dvList.valor + ";\n" ;
 :};
 DEFVARLIST ::= VARLIST:vList dosPuntos TBAS:t {:
         RESULT = new DefVarList();
         RESULT.valor = vList.valor;
         RESULT.cab = t.valor;
+        
 :}  | DEFVARLIST:dvList puntoComa VARLIST:vList dosPuntos TBAS:t {:
         RESULT = new DefVarList();
         RESULT.valor = dvList.valor + ";\n" + t.valor+ " " + vList.valor ;
@@ -138,9 +140,18 @@ DEFVARLIST ::= VARLIST:vList dosPuntos TBAS:t {:
 VARLIST ::= identifier:id {:
         RESULT = new VarList();
         RESULT.valor = id;
+        RESULT.max = 1;
+        RESULT.lista[0] = id;
+ 
 :}  | identifier:id coma VARLIST:vList {:
         RESULT = new VarList();
-        RESULT.valor = id + ", " + vList.valor;
+        RESULT.valor = id + ", " + vList.valor; // para cuando no es una funcion
+        for(int i =0; i<vList.max;i++)
+        {
+            RESULT.lista[i] = vList.lista[i];
+        }
+        RESULT.lista[vList.max]= id;
+        RESULT.max = vList.max +1;
 :};
 DEFPROC ::= procedure_ identifier:id FORMAL_PARAMLIST:fpList puntoComa BLQ:b puntoComa {:
         RESULT = new DefProc();
@@ -148,7 +159,7 @@ DEFPROC ::= procedure_ identifier:id FORMAL_PARAMLIST:fpList puntoComa BLQ:b pun
 :};
 DEFFUN ::= function_ identifier:id FORMAL_PARAMLIST:fp dosPuntos TBAS:t puntoComa BLQ:b puntoComa {:
         RESULT = new DefFun();
-        RESULT.valor = b.cab + "\n" + t.valor + id + fp.valor + b.valor;
+        RESULT.valor =  t.valor +" "+ id +" "+ fp.valor  + b.apertura + b.cab + b.valor + b.cierre;
 :};
 FORMAL_PARAMLIST ::= {:
         RESULT = new FormalParamList();
@@ -162,7 +173,12 @@ FORMAL_PARAM ::= VARLIST:vList dosPuntos TBAS:t {:
         RESULT.valor = t.valor + " " + vList.valor;
 :}  | VARLIST:vList dosPuntos TBAS:t puntoComa FORMAL_PARAM:fp {:
         RESULT = new FormalParam();
-        RESULT.valor = t.valor + vList.valor + ", " + fp.valor;
+        //RESULT.valor = t.valor +" "+ vList.valor + ", " + fp.valor;
+        for (int i=vList.max;i>0;i--)
+        {
+            RESULT.valor = RESULT.valor + t.valor+" "+vList.lista[i-1]+", ";
+        }
+        RESULT.valor = RESULT.valor + " " + fp.valor;
 :};
 TBAS ::= int_ {:
         RESULT = new Tipo();
@@ -216,7 +232,7 @@ OPARIT ::= mas_{:
         RESULT.valor = "/ ";
 :} | mod_{:
         RESULT = new Operadores();
-        RESULT.valor = "%";
+        RESULT.valor = "% "; 
 :} ;
 FACTOR ::= SIMPVALUE:sv {:
         RESULT=new Factor();
