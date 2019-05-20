@@ -14,6 +14,8 @@ parser code{:
         ArrayList<String> var = new ArrayList<String>();
         ArrayList<String> fun = new ArrayList<String>();
         int nivel = 0;
+        int nivelCab = 0;
+        String funAct = "";
         
 :}
 
@@ -72,7 +74,7 @@ PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
 :} 
         | unit_ identifier puntoComa DCLLIST punto ;
 
-BLQ ::= {:nivel++;:}DCLLIST:dList begin_ SENTLIST:sList{:nivel--;:} end_ {:
+BLQ ::= {:nivelCab++;:}DCLLIST:dList{:nivelCab--;:} begin_ {:nivel++;:}SENTLIST:sList{:nivel--;:} end_ {:
         RESULT = new Blq();
         RESULT.cab = dList.valor;
         RESULT.apertura = "\n{ \n";           
@@ -132,7 +134,7 @@ SIMPVALUE ::= numeric_integer_const:nic {:
 DEFVAR ::= var_:var DEFVARLIST:dvList puntoComa {:
         RESULT = new DefVar();
         RESULT.valor = dvList.cab + " " + dvList.valor + ";\n" ;
-        for(int k = 0;k<nivel-1;k++)
+        for(int k = 0;k<nivelCab-1;k++)
         {
             RESULT.valor = "\t" + RESULT.valor;
         }
@@ -145,7 +147,7 @@ DEFVARLIST ::= VARLIST:vList dosPuntos TBAS:t {:
 :}  | DEFVARLIST:dvList puntoComa VARLIST:vList dosPuntos TBAS:t {:
         RESULT = new DefVarList();
         RESULT.valor = dvList.valor + ";\n";
-        for(int k = 0;k<nivel-1;k++)
+        for(int k = 0;k<nivelCab-1;k++)
         {
             RESULT.valor = RESULT.valor + "\t" ;
         }
@@ -170,13 +172,15 @@ VARLIST ::= identifier:id {:
         RESULT.max = vList.max +1;
         var.add(id);
 :};
-DEFPROC ::= procedure_ identifier:id FORMAL_PARAMLIST:fpList puntoComa BLQ:b puntoComa {:
+DEFPROC ::= procedure_ identifier:id{:funAct="";:} FORMAL_PARAMLIST:fpList puntoComa BLQ:b puntoComa {:
         RESULT = new DefProc();
+        funAct="";
         RESULT.valor =  "void " + id + fpList.valor + b.apertura +b.cab + b.valor  + b.cierre;
         fun.add(id);
 :};
-DEFFUN ::= function_ identifier:id{:fun.add(id);:} FORMAL_PARAMLIST:fp dosPuntos TBAS:t puntoComa BLQ:b puntoComa {:
+DEFFUN ::= function_ identifier:id{:fun.add(id);funAct=id;:} FORMAL_PARAMLIST:fp dosPuntos TBAS:t puntoComa BLQ:b puntoComa {:
         RESULT = new DefFun();
+        funAct = "";
         RESULT.valor =  t.valor +" "+ id +" "+ fp.valor  + b.apertura + b.cab + b.valor + b.cierre;
         fun.add(id);
 :};
@@ -210,15 +214,14 @@ TBAS ::= int_ {:
 SENT ::= ASIG:a puntoComa{:
         RESULT = new Sent();
         RESULT.valor = a.valor + "; \n";
-        for(int m=0;m<nivel-1;m++)
+        for(int m=0;m<nivel;m++)
         {
-            RESULT.valor = "\t" + RESULT.valor + "HOLA";
-            System.out.println(nivel);
+            RESULT.valor = "\t" + RESULT.valor;
         }
 :}  | PROC_CALL:pc puntoComa{:
         RESULT = new Sent();
         RESULT.valor = pc.valor + "; \n" ;
-        for(int j=0;j<nivel-1;j++)
+        for(int j=0;j<nivel;j++)
         {
             RESULT.valor = "\t" + RESULT.valor;
         }
@@ -229,7 +232,10 @@ SENT ::= ASIG:a puntoComa{:
 INC ::= to_ | downto_ ;
 ASIG ::= ID:id puntosIgual:p EXP:e{:
         RESULT = new Asig();
-        RESULT.valor = id.valor + " = " + e.valor;
+        if(id.valor.equals(funAct))
+            RESULT.valor = "return " + e.valor;
+        else
+            RESULT.valor = id.valor + " = " + e.valor;
 :} ;
 ID ::= identifier:id{:
         RESULT=new Id();
