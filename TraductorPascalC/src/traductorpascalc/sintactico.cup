@@ -5,6 +5,7 @@ import java.util.ArrayList;
 action code {:
 :}
 parser code{:
+        
 	public void syntax_error(String string, Symbol s){
 		System.out.println(string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
 	}
@@ -16,6 +17,16 @@ parser code{:
         int nivel = 0;
         int nivelCab = 0;
         String funAct = "";
+        String a;
+        public String niveles(int n)
+        {
+            String a="";
+            for(int t=0;t<n;t++)
+            {
+                a = "\t" + a;
+            }
+            return a;
+        }
         
 :}
 
@@ -38,7 +49,7 @@ non terminal FormalParam FORMAL_PARAM;
 non terminal Tipo TBAS;
 
 non terminal Sent SENT;
-non terminal INC;
+non terminal Inc INC;
 non terminal Asig ASIG;
 non terminal Id ID;
 non terminal Exp EXP;
@@ -49,10 +60,10 @@ non terminal SubPparamList SUBPPARAMLIST;
 non terminal ExpList EXPLIST;
 non terminal ProcCall PROC_CALL;
 
-non terminal EXPCOND;
-non terminal OPLOG;
-non terminal FACTORCOND;
-non terminal OPCOMP;
+non terminal ExpCond EXPCOND;
+non terminal OpLog OPLOG;
+non terminal FactorCond FACTORCOND;
+non terminal OpComp OPCOMP;
 
 
 terminal String program_, identifier,numeric_integer_const,  numeric_real_const, 
@@ -77,7 +88,7 @@ PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
 BLQ ::= {:nivelCab++;:}DCLLIST:dList{:nivelCab--;:} begin_ {:nivel++;:}SENTLIST:sList{:nivel--;:} end_ {:
         RESULT = new Blq();
         RESULT.cab = dList.valor;
-        RESULT.apertura = "\n{ \n";           
+        RESULT.apertura = "{ \n";           
         RESULT.cierre = "} \n";
         RESULT.valor = sList.valor;
         
@@ -225,13 +236,50 @@ SENT ::= ASIG:a puntoComa{:
         {
             RESULT.valor = "\t" + RESULT.valor;
         }
-:}  | if_ EXPCOND:ec then_ BLQ:b1 else_ BLQ:b2 {:
+:}  | if_ EXPCOND:ec1 then_ BLQ:b1 else_ BLQ:b2 {:
         RESULT = new Sent();
-        RESULT.valor = "if(" + ec.valor + ")\n" + b1.apertura + b1.cab + b1.valor + b1.cierre + "else\n" + b2.apertura + b2.cab + b2.valor + b2.cierre;  
-:}  | while_ EXPCOND do_ BLQ
-        | repeat_ BLQ until_ EXPCOND puntoComa
-        | for_ identifier puntosIgual EXP INC EXP do_ BLQ ; 
-INC ::= to_ | downto_ ;
+        String aux =niveles(nivel);
+
+        RESULT.valor = aux + "if(" + ec1.valor + ")"; 
+        RESULT.valor = RESULT.valor +"\n"+ aux + b1.apertura; 
+        RESULT.valor = RESULT.valor + b1.cab + b1.valor;      
+        RESULT.valor = RESULT.valor + aux + b1.cierre;
+        RESULT.valor = RESULT.valor + aux + "else";
+        RESULT.valor = RESULT.valor +"\n"+ aux+ b2.apertura;
+        RESULT.valor = RESULT.valor + b2.cab + b2.valor;
+        RESULT.valor = RESULT.valor + aux+b2.cierre;
+:}  | while_ EXPCOND:ec do_ BLQ:b {:
+        String aux = niveles(nivel);
+        RESULT = new Sent();
+        RESULT.valor = aux + "while("+ec.valor+")";
+        RESULT.valor = RESULT.valor +"\n"+ aux + b.apertura;
+        RESULT.valor = RESULT.valor + b.cab + b.valor;      
+        RESULT.valor = RESULT.valor + aux + b.cierre;
+:}  | repeat_ BLQ:b until_ EXPCOND:ec puntoComa {:
+        String aux = niveles(nivel);
+        RESULT = new Sent();
+        RESULT.valor = aux + "do";
+        RESULT.valor = RESULT.valor +"\n"+ aux + b.apertura;
+        RESULT.valor = RESULT.valor + b.cab + b.valor;  
+        RESULT.valor = RESULT.valor + aux + b.cierre;
+        RESULT.valor = RESULT.valor + aux + "until("+ec.valor+")\n";
+:}  | for_ identifier:id puntosIgual EXP:e1 INC:i EXP:e2 do_ BLQ:b {:
+        String aux = niveles(nivel);
+        RESULT = new Sent();
+        RESULT.valor = aux + "for("+id+"="+e1.valor+";"+id+i.valor+e2.valor+i.numero+";"+id+"="+id+i.numero+")";
+        RESULT.valor = RESULT.valor +"\n"+ aux + b.apertura;
+        RESULT.valor = RESULT.valor + b.cab + b.valor;      
+        RESULT.valor = RESULT.valor + aux + b.cierre;
+:}; 
+INC ::= to_{:
+        RESULT= new Inc();
+        RESULT.valor="<";
+        RESULT.numero="+1";
+:}  | downto_ {:
+        RESULT= new Inc();
+        RESULT.valor=">";
+        RESULT.numero="-1";
+:};
 ASIG ::= ID:id puntosIgual:p EXP:e{:
         RESULT = new Asig();
         if(id.valor.equals(funAct))
@@ -339,19 +387,19 @@ FACTORCOND ::= EXP:e1 OPCOMP:oc EXP:e2 {:
         RESULT=new FactorCond();
         RESULT.valor = "!"+f.valor;
 :};
-OPCOMP ::= menor:m {:
+OPCOMP ::= menor {:
         RESULT=new OpComp();
         RESULT.valor = "<";
-:}  | mayor:ma {:
+:}  | mayor {:
         RESULT=new OpComp();
         RESULT.valor = ">";
-:}  | menorIgual:mi {:
+:}  | menorIgual {:
         RESULT=new OpComp();
         RESULT.valor = "<=";
-:}  | mayorIgual:mai {:
+:}  | mayorIgual {:
         RESULT=new OpComp();
         RESULT.valor = ">=";
-:}  | igual:i {:
+:}  | igual {:
         RESULT=new OpComp();
         RESULT.valor = "=";
 :};

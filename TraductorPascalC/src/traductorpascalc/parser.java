@@ -337,6 +337,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
 
 
+        
 	public void syntax_error(String string, Symbol s){
 		System.out.println(string + "Error localizado antes de: Linea "+s.left+" Columna "+s.right); 
 	}
@@ -348,6 +349,16 @@ public class parser extends java_cup.runtime.lr_parser {
         int nivel = 0;
         int nivelCab = 0;
         String funAct = "";
+        String a;
+        public String niveles(int n)
+        {
+            String a="";
+            for(int t=0;t<n;t++)
+            {
+                a = "\t" + a;
+            }
+            return a;
+        }
         
 
 
@@ -483,7 +494,7 @@ nivel--;
 		
         RESULT = new Blq();
         RESULT.cab = dList.valor;
-        RESULT.apertura = "\n{ \n";           
+        RESULT.apertura = "{ \n";           
         RESULT.cierre = "} \n";
         RESULT.valor = sList.valor;
         
@@ -1041,9 +1052,9 @@ fun.add(id);funAct=id;
           case 39: // SENT ::= if_ EXPCOND then_ BLQ else_ BLQ 
             {
               Sent RESULT =null;
-		int ecleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
-		int ecright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
-		Object ec = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int ec1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int ec1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		ExpCond ec1 = (ExpCond)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
 		int b1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int b1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Blq b1 = (Blq)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
@@ -1052,7 +1063,16 @@ fun.add(id);funAct=id;
 		Blq b2 = (Blq)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT = new Sent();
-        RESULT.valor = "if(" + ec.valor + ")\n" + b1.apertura + b1.cab + b1.valor + b1.cierre + "else\n" + b2.apertura + b2.cab + b2.valor + b2.cierre;  
+        String aux =niveles(nivel);
+
+        RESULT.valor = aux + "if(" + ec1.valor + ")"; 
+        RESULT.valor = RESULT.valor +"\n"+ aux + b1.apertura; 
+        RESULT.valor = RESULT.valor + b1.cab + b1.valor;      
+        RESULT.valor = RESULT.valor + aux + b1.cierre;
+        RESULT.valor = RESULT.valor + aux + "else";
+        RESULT.valor = RESULT.valor +"\n"+ aux+ b2.apertura;
+        RESULT.valor = RESULT.valor + b2.cab + b2.valor;
+        RESULT.valor = RESULT.valor + aux+b2.cierre;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1062,6 +1082,19 @@ fun.add(id);funAct=id;
           case 40: // SENT ::= while_ EXPCOND do_ BLQ 
             {
               Sent RESULT =null;
+		int ecleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int ecright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		ExpCond ec = (ExpCond)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Blq b = (Blq)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        String aux = niveles(nivel);
+        RESULT = new Sent();
+        RESULT.valor = aux + "while("+ec.valor+")";
+        RESULT.valor = RESULT.valor +"\n"+ aux + b.apertura;
+        RESULT.valor = RESULT.valor + b.cab + b.valor;      
+        RESULT.valor = RESULT.valor + aux + b.cierre;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1071,6 +1104,20 @@ fun.add(id);funAct=id;
           case 41: // SENT ::= repeat_ BLQ until_ EXPCOND puntoComa 
             {
               Sent RESULT =null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		Blq b = (Blq)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int ecleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int ecright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		ExpCond ec = (ExpCond)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		
+        String aux = niveles(nivel);
+        RESULT = new Sent();
+        RESULT.valor = aux + "do";
+        RESULT.valor = RESULT.valor +"\n"+ aux + b.apertura;
+        RESULT.valor = RESULT.valor + b.cab + b.valor;  
+        RESULT.valor = RESULT.valor + aux + b.cierre;
+        RESULT.valor = RESULT.valor + aux + "until("+ec.valor+")\n";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1080,6 +1127,28 @@ fun.add(id);funAct=id;
           case 42: // SENT ::= for_ identifier puntosIgual EXP INC EXP do_ BLQ 
             {
               Sent RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)).right;
+		String id = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value;
+		int e1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
+		int e1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
+		Exp e1 = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
+		int ileft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		Inc i = (Inc)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int e2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int e2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		Exp e2 = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		Blq b = (Blq)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		
+        String aux = niveles(nivel);
+        RESULT = new Sent();
+        RESULT.valor = aux + "for("+id+"="+e1.valor+";"+id+i.valor+e2.valor+i.numero+";"+id+"="+id+i.numero+")";
+        RESULT.valor = RESULT.valor +"\n"+ aux + b.apertura;
+        RESULT.valor = RESULT.valor + b.cab + b.valor;      
+        RESULT.valor = RESULT.valor + aux + b.cierre;
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("SENT",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-7)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1088,7 +1157,11 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 43: // INC ::= to_ 
             {
-              Object RESULT =null;
+              Inc RESULT =null;
+		
+        RESULT= new Inc();
+        RESULT.valor="<";
+        RESULT.numero="+1";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("INC",17, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1097,7 +1170,11 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 44: // INC ::= downto_ 
             {
-              Object RESULT =null;
+              Inc RESULT =null;
+		
+        RESULT= new Inc();
+        RESULT.valor=">";
+        RESULT.numero="-1";
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("INC",17, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1398,16 +1475,16 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 63: // EXPCOND ::= EXPCOND OPLOG EXPCOND 
             {
-              Object RESULT =null;
+              ExpCond RESULT =null;
 		int ec1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int ec1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
-		Object ec1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		ExpCond ec1 = (ExpCond)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int oplogleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int oplogright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		Object oplog = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		OpLog oplog = (OpLog)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int ec2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int ec2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Object ec2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		ExpCond ec2 = (ExpCond)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT=new ExpCond();
         RESULT.valor = ec1.valor +" "+ oplog.valor +" "+ ec2.valor;
@@ -1419,10 +1496,10 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 64: // EXPCOND ::= FACTORCOND 
             {
-              Object RESULT =null;
+              ExpCond RESULT =null;
 		int fcleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int fcright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Object fc = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		FactorCond fc = (FactorCond)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT=new ExpCond();
         RESULT.valor = fc.valor; 
@@ -1434,7 +1511,7 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 65: // OPLOG ::= or_ 
             {
-              Object RESULT =null;
+              OpLog RESULT =null;
 		
         RESULT=new OpLog();
         RESULT.valor = "||";
@@ -1446,7 +1523,7 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 66: // OPLOG ::= and_ 
             {
-              Object RESULT =null;
+              OpLog RESULT =null;
 		
         RESULT=new OpLog();
         RESULT.valor = "&&";
@@ -1458,13 +1535,13 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 67: // FACTORCOND ::= EXP OPCOMP EXP 
             {
-              Object RESULT =null;
+              FactorCond RESULT =null;
 		int e1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
 		int e1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Exp e1 = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		int ocleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int ocright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
-		Object oc = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
+		OpComp oc = (OpComp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		int e2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int e2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Exp e2 = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
@@ -1479,7 +1556,7 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 68: // FACTORCOND ::= abrirPar EXP cerrarPar 
             {
-              Object RESULT =null;
+              FactorCond RESULT =null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Exp e = (Exp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
@@ -1494,10 +1571,10 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 69: // FACTORCOND ::= not_ FACTORCOND 
             {
-              Object RESULT =null;
+              FactorCond RESULT =null;
 		int fleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int fright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		Object f = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		FactorCond f = (FactorCond)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
         RESULT=new FactorCond();
         RESULT.valor = "!"+f.valor;
@@ -1509,10 +1586,7 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 70: // OPCOMP ::= menor 
             {
-              Object RESULT =null;
-		int mleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int mright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String m = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+              OpComp RESULT =null;
 		
         RESULT=new OpComp();
         RESULT.valor = "<";
@@ -1524,10 +1598,7 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 71: // OPCOMP ::= mayor 
             {
-              Object RESULT =null;
-		int maleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int maright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String ma = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+              OpComp RESULT =null;
 		
         RESULT=new OpComp();
         RESULT.valor = ">";
@@ -1539,10 +1610,7 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 72: // OPCOMP ::= menorIgual 
             {
-              Object RESULT =null;
-		int mileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int miright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String mi = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+              OpComp RESULT =null;
 		
         RESULT=new OpComp();
         RESULT.valor = "<=";
@@ -1554,10 +1622,7 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 73: // OPCOMP ::= mayorIgual 
             {
-              Object RESULT =null;
-		int maileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int mairight = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String mai = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+              OpComp RESULT =null;
 		
         RESULT=new OpComp();
         RESULT.valor = ">=";
@@ -1569,10 +1634,7 @@ fun.add(id);funAct=id;
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 74: // OPCOMP ::= igual 
             {
-              Object RESULT =null;
-		int ileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int iright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		String i = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+              OpComp RESULT =null;
 		
         RESULT=new OpComp();
         RESULT.valor = "=";
