@@ -14,7 +14,7 @@ import java_cup.runtime.Symbol;
 
 /*---------------- palabras reervadas ---------------*/
 "program"	{return new Symbol(sym.program_);}
-"unit"	{return new Symbol(sym.unit_);}
+"UNIT"          {return new Symbol(sym.unit_);}
 
 "."             {return new Symbol (sym.punto);}
 ":"		{return new Symbol(sym.dosPuntos);}

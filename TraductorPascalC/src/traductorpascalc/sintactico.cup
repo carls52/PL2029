@@ -83,7 +83,11 @@ PRG ::= program_ identifier:id puntoComa BLQ:b punto {:
         RESULT = b.cab + "void main (void) \n{\n" + b.valor + b.cierre;
         System.out.println(""+RESULT);
 :} 
-        | unit_ identifier puntoComa DCLLIST punto ;
+        | unit_ identifier:id puntoComa DCLLIST:dList punto {:
+        
+        RESULT = "//Libreria: "+id+"\n"+ dList.valor;
+        System.out.println(""+RESULT);
+:}  ;
 
 BLQ ::= {:nivelCab++;:}DCLLIST:dList{:nivelCab--;:} begin_ {:nivel++;:}SENTLIST:sList{:nivel--;:} end_ {:
         RESULT = new Blq();
